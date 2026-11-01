@@ -176,8 +176,8 @@
   </div>
 
   <script>
-    // URL DE TU APPS SCRIPT
-    const SCRIPT_URL = 'PEGAS_AQUÍ_TU_URL_DE_APPS_SCRIPT';
+    // URL EXACTA DE TU APPS SCRIPT INTEGRADA
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFOWHPVkvUJTiPu1x_cx6uQ0ISs46lCGU2uSyilbNdZpuvR98qQRDhC00Xcf-FECNqQ/exec';
 
     function switchTab(evt, tabId) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -190,13 +190,6 @@
     async function cargarDatosDesdeSheets() {
       const statusBadge = document.getElementById('status');
       
-      if (SCRIPT_URL === 'PEGAS_AQUÍ_TU_URL_DE_APPS_SCRIPT') {
-        statusBadge.textContent = 'Falta pegar la URL del Apps Script';
-        statusBadge.style.color = '#ef4444';
-        statusBadge.style.borderColor = '#ef4444';
-        return;
-      }
-
       try {
         const response = await fetch(SCRIPT_URL);
         const data = await response.json();
@@ -209,9 +202,9 @@
           const beneficio = data[1][2];    // Celda C2
           const liquidez = data[1][3];     // Celda D2
 
-          if(capitalTotal) document.getElementById('val-capital-total').textContent = capitalTotal + (typeof capitalTotal === 'number' ? ' €' : '');
-          if(beneficio) document.getElementById('val-beneficio').textContent = beneficio + (typeof beneficio === 'number' ? ' €' : '');
-          if(liquidez) document.getElementById('val-liquidez').textContent = 'Liquidez: ' + liquidez + (typeof liquidez === 'number' ? ' €' : '');
+          if(capitalTotal !== undefined) document.getElementById('val-capital-total').textContent = capitalTotal + (typeof capitalTotal === 'number' ? ' €' : '');
+          if(beneficio !== undefined) document.getElementById('val-beneficio').textContent = beneficio + (typeof beneficio === 'number' ? ' €' : '');
+          if(liquidez !== undefined) document.getElementById('val-liquidez').textContent = 'Liquidez: ' + liquidez + (typeof liquidez === 'number' ? ' €' : '');
 
           // Renderizar tabla del calendario P&L (Filas 5 a 16)
           const tbodyResumen = document.getElementById('tbl-resumen-body');
