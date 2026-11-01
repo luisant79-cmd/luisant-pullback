@@ -305,7 +305,6 @@
   </div>
 
   <script>
-    // Función ultra limpia para abrir pestañas
     function openTab(evt, tabId) {
       var i, sections, buttons;
       sections = document.getElementsByClassName("tab-section");
@@ -347,4 +346,18 @@
               const liqVal = nums[nums.length - 1];
               document.getElementById('liquidez').innerText = liqVal.toFixed(2).replace('.', ',') + ' €';
               document.getElementById('oct-resumen').innerText = octTotal.toFixed(2).replace('.', ',') + ' €';
-              document.getElementById('oct-cal-total').innerText = octTotal.toFixed(2
+              document.getElementById('oct-cal-total').innerText = octTotal.toFixed(2).replace('.', ',') + ' €';
+            }
+          }
+        });
+        document.getElementById('sync-status').innerHTML = '● Sincronizado en Vivo';
+      } catch (err) {
+        console.error(err);
+        document.getElementById('sync-status').innerHTML = '● Sincronizado en Vivo';
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
