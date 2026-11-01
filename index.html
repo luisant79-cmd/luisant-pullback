@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUISANT PULLBACK - Diario de Trading</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-green: #22c55e;
+            --accent-green-bg: rgba(34, 197, 94, 0.15);
+            --accent-red: #ef4444;
+            --accent-red-bg: rgba(239, 68, 68, 0.15);
+            --brand-color: #f59e0b;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--brand-color);
+            letter-spacing: 0.05em;
+        }
+        .logo span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        nav {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+        }
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.75rem 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        nav a.active, nav a:hover {
+            color: var(--text-primary);
+            border-bottom-color: var(--brand-color);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .metric-main {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .metric-sub {
+            font-size: 0.875rem;
+            color: var(--accent-green);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .mini-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 6px;
+        }
+        .mini-card .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .mini-card .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+        
+        /* Calendario Mensual Estilo Trading */
+        .calendar-header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .cal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .calendar-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 6px;
+            margin-top: 0.5rem;
+        }
+        .calendar-table th {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            padding: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+        .calendar-day {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            height: 85px;
+            vertical-align: top;
+            padding: 8px;
+            width: 14.28%;
+        }
+        .calendar-day.empty {
+            background-color: transparent;
+            border: none;
+        }
+        .calendar-day.positive {
+            background-color: var(--accent-green-bg);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+        .calendar-day.negative {
+            background-color: var(--accent-red-bg);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .day-number {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .day-pnl {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 12px;
+        }
+        .week-summary {
+            background-color: rgba(255, 255, 255, 0.04);
+            text-align: center;
+            font-weight: 700;
+            border-radius: 6px;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        .badge-green { color: var(--accent-green); font-weight: 600; }
+        .badge-red { color: var(--accent-red); font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>LUISANT PULLBACK</h1>
+            <span>Técnica, paciencia y disciplina • Cartera Global</span>
+        </div>
+        <div style="font-size: 0.875rem; color: var(--accent-green); font-weight: 600;">
+            ● Sincronizado en Vivo
+        </div>
+    </header>
+
+    <nav>
+        <a onclick="cambiarTab('resumen', this)" class="active">Resumen Cartera</a>
+        <a onclick="cambiarTab('calendario', this)">Calendario P&L</a>
+        <a onclick="cambiarTab('posiciones', this)">Posiciones & Cartera</a>
+        <a onclick="cambiarTab('operaciones', this)">Operaciones</a>
+        <a onclick="cambiarTab('rendimiento', this)">Rendimiento P&L</a>
+    </nav>
+
+    <div class="container">
+        <!-- RESUMEN CARTERA -->
+        <div id="resumen" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <span>Valor Total de la Cartera (Capital + Liquidez)</span>
+                    <span>Base EUR (€)</span>
+                </div>
+                <div class="metric-main">82.277,15 €</div>
+                <div class="metric-sub">Beneficio acumulado: +7.975,28 € • Capital inicial: 71.018,00 €</div>
+                
+                <div class="metrics-grid">
+                    <div class="mini-card">
+                        <div class="label">Liquidez Disponible</div>
+                        <div class="value">3.565,96 €</div>
+                    </div>
+                    <div class="mini-card">
+                        <div class="label">Resultado Octubre</div>
+                        <div class="value badge-red">-159,71 €</div>
+                    </div>
+                    <div class="mini-card">
+                        <div class="label">Mejor Mes (Mayo)</div>
+                        <div class="value badge-green">+1.755,71 €</div>
+                    </div>
+                    <div class="mini-card">
+                        <div class="label">Estrategia Activa</div>
+                        <div class="value" style="font-size: 1rem; color: var(--brand-color);">Pullback & Reclaim</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>Últimas Operaciones Sincronizadas</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Activo</th>
+                            <th>Operativa</th>
+                            <th>Tipo</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>P&L (€)</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>30/10/2026</td>
+                            <td>SMCI 20 @32,70</td>
+                            <td>Posición Principal</td>
+                            <td>VENTA</td>
+                            <td>-588,28 €</td>
+                            <td>584,23 €</td>
+                            <td class="badge-red">-8,05 €</td>
+                            <td>Cerrada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CALENDARIO P&L -->
+        <div id="calendario" class="tab-content">
+            <div class="card">
+                <div class="calendar-header-controls">
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Calendario de P&L</span>
+                        <div class="cal-title">Octubre 2026</div>
+                    </div>
+                    <div style="font-size: 0.875rem; color: var(--accent-red); font-weight: 600;">
+                        Total mes: -159,71 €
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                    Ganancia o pérdida neta de cada sesión operativa basada en las posiciones cerradas de octubre.
+                </p>
+
+                <table class="calendar-table">
+                    <thead>
+                        <tr>
+                            <th>LUN</th>
+                            <th>MAR</th>
+                            <th>MIÉ</th>
+                            <th>JUE</th>
+                            <th>VIE</th>
+                            <th>SÁB</th>
+                            <th>DOM</th>
+                            <th>SEMANA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendarioDiasBody">
+                        <!-- Generado sin mención a cuentas -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- POSICIONES & CARTERA -->
+        <div id="posiciones" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span>Estructura de Activos & Brokers</span>
+                    <span>Multi-Broker</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Broker / Plataforma</th>
+                            <th>Instrumentos / Activos</th>
+                            <th>Estrategia Operativa</th>
+                            <th>Estado Actual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Degiro (Principal)</strong></td><td>Swing Principal (RHI)</td><td>Seguimiento ATR / Niveles VWAP</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>Interactive Brokers</strong></td><td>Estrategia Global / Acciones</td><td>Valor / Asignación Global</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>Degiro (Secundaria)</strong></td><td>Posiciones en Cartera</td><td>Pullback y Reclaim</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>Degiro (NASDAQ)</strong></td><td>NASDAQ / Acciones Base</td><td>VWAP 15M / Crossover EMAs</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>Degiro (Reserva)</strong></td><td>Reserva / Liquidez Segregada</td><td>Gestión de Capital</td><td class="badge-green">En espera</td></tr>
+                        <tr><td><strong>Trading 212</strong></td><td>Trading 212 (Acciones y Dividendos)</td><td>Swing / Share Lending</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>Degiro (Control)</strong></td><td>Posiciones secundarias</td><td>Control de Riesgo</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>Degiro (Operativa)</strong></td><td>Cartera Principal Broker</td><td>Swing Trading Operativo</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>Trade Republic</strong></td><td>Acciones y Efectivo</td><td>Efectivo / Gestiones de Salida</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>MyInvestor</strong></td><td>Fondos / Indexados / Acciones</td><td>DCA y Largo Plazo</td><td class="badge-green">Activa</td></tr>
+                        <tr><td><strong>Multi-Broker</strong></td><td>Metales (Oro, Plata, Cobre), SPCX, COCA</td><td>Materias Primas / Físico</td><td class="badge-green">Acumulación</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- OPERACIONES -->
+        <div id="operaciones" class="tab-content">
+            <div class="card">
+                <div class="card-header"><span>Historial Operativo Consolidado</span></div>
+                <table>
+                    <thead>
+                        <tr><th>Fecha</th><th>Activo</th><th>Segmento</th><th>Tipo</th><th>P&L</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>30/10/2026</td><td>SMCI 20 @32,70</td><td>Bloque Principal</td><td>VENTA</td><td class="badge-red">-8,05 €</td><td>Cerrada</td></tr>
+                        <tr><td>29/10/2026</td><td>IREN 25 @27,00</td><td>Bloque Principal</td><td>VENTA</td><td class="badge-green">+10,36 €</td><td>Cerrada</td></tr>
+                        <tr><td>28/10/2026</td><td>MRVL 4@248,70</td><td>Bloque Principal</td><td>COMPRA</td><td class="badge-green">+3,09 €</td><td>Cerrada</td></tr>
+                        <tr><td>27/10/2026</td><td>QSI 300@1,52</td><td>Bloque Principal</td><td>VENTA</td><td class="badge-green">+27,36 €</td><td>Cerrada</td></tr>
+                        <tr><td>06/10/2026</td><td>MERE 600@0,38</td><td>Bloque Operativo</td><td>VENTA</td><td class="badge-red">-122,30 €</td><td>Cerrada</td></tr>
+                        <tr><td>02/10/2026</td><td>QSI 300@1,43</td><td>Bloque Operativo</td><td>VENTA</td><td class="badge-green">+9,00 €</td><td>Cerrada</td></tr>
+                        <tr><td>20/10/2026</td><td>HIMS 20@31,50</td><td>Bloque Principal</td><td>VENTA</td><td class="badge-green">+3,80 €</td><td>Cerrada</td></tr>
+                        <tr><td>09/10/2026</td><td>HIMS 20@29,50</td><td>Bloque Principal</td><td>VENTA</td><td class="badge-green">+0,04 €</td><td>Cerrada</td></tr>
+                        <tr><td>08/10/2026</td><td>HIMS 20@28,00</td><td>Bloque Principal</td><td>COMPRA</td><td class="badge-green">+20,19 €</td><td>Cerrada</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RENDIMIENTO P&L -->
+        <div id="rendimiento" class="tab-content">
+            <div class="card">
+                <div class="card-header"><span>Rendimiento Mensual P&L (2026)</span></div>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    <strong>Enero: +1.451,94 €</strong> | <strong>Febrero: +496,37 €</strong> | <strong>Marzo: +466,94 €</strong> | <strong>Abril: +1.115,34 €</strong><br>
+                    <strong>Mayo: +1.755,71 €</strong> | <strong>Junio: +1.357,64 €</strong> | <strong>Julio: +578,92 €</strong> | <strong>Agosto: +354,16 €</strong><br>
+                    <strong>Septiembre: +557,97 €</strong> | <strong>Octubre: -159,71 €</strong> | <strong>Noviembre: 0 €</strong> | <strong>Diciembre: 0 €</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function cambiarTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        const datosOctubreNetos = {
+            2: 9.00,
+            6: -122.30,
+            8: 20.19,
+            9: 0.04,
+            13: 0.00,
+            20: 3.80,
+            27: 27.36,
+            28: 3.09,
+            29: 10.36,
+            30: -8.05
+        };
+
+        function renderizarCalendario() {
+            const tbody = document.getElementById("calendarioDiasBody");
+            tbody.innerHTML = "";
+
+            const semanas = [
+                [null, null, null, 1, 2, 3, 4],
+                [5, 6, 7, 8, 9, 10, 11],
+                [12, 13, 14, 15, 16, 17, 18],
+                [19, 20, 21, 22, 23, 24, 25],
+                [26, 27, 28, 29, 30, 31, null]
+            ];
+
+            semanas.forEach(semana => {
+                let tr = document.createElement("tr");
+                let sumaSemana = 0;
+
+                semana.forEach(dia => {
+                    let td = document.createElement("td");
+                    if (dia === null) {
+                        td.className = "calendar-day empty";
+                    } else {
+                        td.className = "calendar-day";
+                        let val = datosOctubreNetos[dia];
+                        let html = `<div class="day-number">${dia}</div>`;
+
+                        if (val !== undefined) {
+                            sumaSemana += val;
+                            if (val > 0) {
+                                td.classList.add("positive");
+                                html += `<div class="day-pnl badge-green">+${val.toFixed(2)} €</div>`;
+                            } else if (val < 0) {
+                                td.classList.add("negative");
+                                html += `<div class="day-pnl badge-red">${val.toFixed(2)} €</div>`;
+                            } else {
+                                html += `<div class="day-pnl" style="color:var(--text-secondary); font-size:0.75rem;">0,00 €</div>`;
+                            }
+                        } else {
+                            html += `<div class="day-pnl" style="color:var(--text-secondary); font-size:0.75rem;">-</div>`;
+                        }
+                        td.innerHTML = html;
+                    }
+                    tr.appendChild(td);
+                });
+
+                let tdSemana = document.createElement("td");
+                tdSemana.className = "week-summary " + (sumaSemana >= 0 ? "badge-green" : "badge-red");
+                tdSemana.innerText = (sumaSemana > 0 ? "+" : "") + sumaSemana.toFixed(2) + " €";
+                tr.appendChild(tdSemana);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        renderizarCalendario();
+    </script>
+</body>
+</html>
