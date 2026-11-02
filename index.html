@@ -85,27 +85,43 @@
       border: 1px solid var(--border);
     }
 
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
+    /* Tabla clásica ultraligera para el calendario a prueba de móviles */
+    .cal-table {
+      width: 100%;
+      border-collapse: collapse;
       margin-top: 12px;
+      table-layout: fixed;
     }
-    .cal-day-head { text-align: center; font-size: 11px; color: var(--text-muted); padding-bottom: 4px; text-transform: uppercase; }
-    .cal-day {
+    .cal-table th {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 8px 0;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .cal-table td {
       background: #0f172a;
       border: 1px solid var(--border);
-      border-radius: 6px;
-      min-height: 75px;
-      padding: 6px;
+      height: 70px;
+      vertical-align: top;
+      padding: 4px;
       font-size: 11px;
+      width: 14.28%;
     }
-    .cal-day-num { font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 4px; }
-    .cal-empty { background: rgba(15, 23, 42, 0.4); border: 1px dashed rgba(51, 65, 85, 0.4); }
+    .cal-day-num {
+      font-weight: bold;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .cal-empty {
+      background: rgba(15, 23, 42, 0.4);
+    }
     .cal-event {
-      font-size: 10px;
-      padding: 3px;
-      border-radius: 4px;
+      font-size: 9px;
+      padding: 2px 4px;
+      border-radius: 3px;
       text-align: center;
       font-weight: 600;
       margin-top: 2px;
@@ -115,7 +131,6 @@
     
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
-    th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; }
 
     .green-text { color: var(--green); }
     .red-text { color: var(--red); }
@@ -132,7 +147,7 @@
         <h1>$LUISANT PULLBACK</h1>
         <div class="subtitle">Técnica, paciencia y disciplina • Cartera Global</div>
       </div>
-      <div id="sync-status" class="badge-sync">● Sincronizado en Vivo</div>
+      <div id="sync-status" class="badge-sync">● Operativo</div>
     </div>
 
     <!-- Pestañas Navegación -->
@@ -154,11 +169,11 @@
       <div class="grid-stats">
         <div class="stat-box">
           <div class="card-title">Liquidez Disponible</div>
-          <div id="liquidez" style="font-size: 18px; font-weight: 600; margin-top: 4px;">3.565,96 €</div>
+          <div style="font-size: 18px; font-weight: 600; margin-top: 4px;">3.565,96 €</div>
         </div>
         <div class="stat-box">
           <div class="card-title">Resultado Octubre (Multi-cuenta)</div>
-          <div id="oct-resumen" class="red-text" style="font-size: 18px; font-weight: 600; margin-top: 4px;">-135,59 €</div>
+          <div class="red-text" style="font-size: 18px; font-weight: 600; margin-top: 4px;">-135,59 €</div>
         </div>
         <div class="stat-box">
           <div class="card-title">Mejor Mes (Mayo)</div>
@@ -216,58 +231,52 @@
         <div style="font-size:13px; color:var(--text-muted);">Total mes: <span class="red-text">-135,59 €</span></div>
       </div>
       
-      <div class="calendar-grid">
-        <div class="cal-day-head">Lun</div><div class="cal-day-head">Mar</div><div class="cal-day-head">Mié</div><div class="cal-day-head">Jue</div><div class="cal-day-head">Vie</div><div class="cal-day-head">Sáb</div><div class="cal-day-head">Dom</div>
-        
-        <div class="cal-day cal-empty"></div>
-        <div class="cal-day cal-empty"></div>
-        <div class="cal-day cal-empty"></div>
-        <div class="cal-day"><span class="cal-day-num">1</span></div>
-        <div class="cal-day"><span class="cal-day-num">2</span></div>
-        <div class="cal-day"><span class="cal-day-num">3</span></div>
-        <div class="cal-day"><span class="cal-day-num">4</span></div>
-
-        <div class="cal-day"><span class="cal-day-num">5</span></div>
-        <div class="cal-day"><span class="cal-day-num">6</span></div>
-        <div class="cal-day"><span class="cal-day-num">7</span></div>
-        <div class="cal-day"><span class="cal-day-num">8</span><div class="cal-event cal-loss">P911<br>-429,89 €</div></div>
-        <div class="cal-day"><span class="cal-day-num">9</span></div>
-        <div class="cal-day"><span class="cal-day-num">10</span></div>
-        <div class="cal-day"><span class="cal-day-num">11</span></div>
-
-        <div class="cal-day"><span class="cal-day-num">12</span></div>
-        <div class="cal-day"><span class="cal-day-num">13</span></div>
-        <div class="cal-day"><span class="cal-day-num">14</span></div>
-        <div class="cal-day"><span class="cal-day-num">15</span></div>
-        <div class="cal-day"><span class="cal-day-num">16</span><div class="cal-event cal-win">KO<br>+31,30 €</div></div>
-        <div class="cal-day"><span class="cal-day-num">17</span></div>
-        <div class="cal-day"><span class="cal-day-num">18</span></div>
-
-        <div class="cal-day"><span class="cal-day-num">19</span></div>
-        <div class="cal-day"><span class="cal-day-num">20</span></div>
-        <div class="cal-day"><span class="cal-day-num">21</span></div>
-        <div class="cal-day"><span class="cal-day-num">22</span></div>
-        <div class="cal-day"><span class="cal-day-num">23</span></div>
-        <div class="cal-day"><span class="cal-day-num">24</span></div>
-        <div class="cal-day"><span class="cal-day-num">25</span></div>
-
-        <div class="cal-day"><span class="cal-day-num">26</span></div>
-        <div class="cal-day"><span class="cal-day-num">27</span></div>
-        <div class="cal-day"><span class="cal-day-num">28</span></div>
-        <div class="cal-day"><span class="cal-day-num">29</span></div>
-        <div class="cal-day"><span class="cal-day-num">30</span><div class="cal-event cal-loss">SMCI<br>-8,05 €</div></div>
-        <div class="cal-day"><span class="cal-day-num">31</span></div>
-        <div class="cal-day cal-empty"></div>
-      </div>
-    </div>
-
-    <!-- Pestaña 3: Posiciones -->
-    <div id="tab-posiciones" class="tab-section card">
-      <div class="card-title">Posiciones & Cartera</div>
-      <p style="color:var(--text-muted); font-size:14px; margin-top:12px;">Monitoreo activo de activos y distribución por cuentas.</p>
-    </div>
-
-    <!-- Pestaña 4: Operaciones -->
-    <div id="tab-operaciones" class="tab-section card">
-      <div class="card-title">Registro de Operaciones</div>
-      <p style="color:var(--text-muted); font-size:
+      <table class="cal-table">
+        <thead>
+          <tr>
+            <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
+            <td><span class="cal-day-num">1</span></td>
+            <td><span class="cal-day-num">2</span></td>
+            <td><span class="cal-day-num">3</span></td>
+            <td><span class="cal-day-num">4</span></td>
+          </tr>
+          <tr>
+            <td><span class="cal-day-num">5</span></td>
+            <td><span class="cal-day-num">6</span></td>
+            <td><span class="cal-day-num">7</span></td>
+            <td><span class="cal-day-num">8</span><div class="cal-event cal-loss">P911<br>-429,89€</div></td>
+            <td><span class="cal-day-num">9</span></td>
+            <td><span class="cal-day-num">10</span></td>
+            <td><span class="cal-day-num">11</span></td>
+          </tr>
+          <tr>
+            <td><span class="cal-day-num">12</span></td>
+            <td><span class="cal-day-num">13</span></td>
+            <td><span class="cal-day-num">14</span></td>
+            <td><span class="cal-day-num">15</span></td>
+            <td><span class="cal-day-num">16</span><div class="cal-event cal-win">KO<br>+31,30€</div></td>
+            <td><span class="cal-day-num">17</span></td>
+            <td><span class="cal-day-num">18</span></td>
+          </tr>
+          <tr>
+            <td><span class="cal-day-num">19</span></td>
+            <td><span class="cal-day-num">20</span></td>
+            <td><span class="cal-day-num">21</span></td>
+            <td><span class="cal-day-num">22</span></td>
+            <td><span class="cal-day-num">23</span></td>
+            <td><span class="cal-day-num">24</span></td>
+            <td><span class="cal-day-num">25</span></td>
+          </tr>
+          <tr>
+            <td><span class="cal-day-num">26</span></td>
+            <td><span class="cal-day-num">27</span></td>
+            <td><span class="cal-day-num">28</span></td>
+            <td><span class="cal-day-num">29</span></td>
+            <td><span class="cal-day-num">30</span><div class="cal-event cal-loss">SMCI<br>-8,05€</div></td>
+            <td><span class="cal-day-num">31</span></td>
+            <td class="
