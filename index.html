@@ -318,7 +318,7 @@
       btn.classList.add("active");
     }
 
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyEMO5o_hDsy7_nV6H5NYpApSMqN29-4t90H24gQ7quYcxuXX656-bXcEAJE8bTOdg/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWWn1B2a27h-Pl3y1Pb4rbt99oVw5jJOWI2xUbFksxIAJvz87Hyoi2moAMkNhpMtdkig/exec';
 
     async function loadData() {
       try {
@@ -329,7 +329,7 @@
         let octOperations = {};
 
         rows.forEach(row => {
-          const rowStr = row.join(' ').toUpperCase();
+          const rowStr = row.map(cell => String(cell || '')).join(' ').toUpperCase();
 
           if (rowStr.includes('CAPITAL INV+LIQ')) {
             row.forEach(val => { if (typeof val === 'number' && val > 50000) document.getElementById('cap-total').innerText = val.toFixed(2).replace('.', ',') + ' €'; });
@@ -351,13 +351,24 @@
             }
           }
 
-          // Detección automática de operaciones de octubre 2026 en la hoja
+          // Detección robusta de fechas de octubre (busca /10/2026 o -10-2026 o formato fecha de Google Sheets)
           let fechaStr = String(row[1] || '');
-          if (fechaStr.includes('/10/2026')) {
-            let partesFecha = fechaStr.split('/');
-            if (partesFecha.length === 3) {
-              let diaNum = parseInt(partesFecha[0], 10);
-              // Tomar el resultado neto de la columna J (row[9]) o el número válido de la fila
+          if (fechaStr.includes('10/2026') || fechaStr.includes('2026-10') || fechaStr.includes('10-2026') || fechaStr.includes('10/26')) {
+            let diaNum = null;
+            if (fechaStr.includes('/')) {
+              let partes = fechaStr.split('/');
+              diaNum = parseInt(partes[0], 10);
+            } else if (fechaStr.includes('-')) {
+              let partes = fechaStr.split('-');
+              if (partes[0].length === 4) {
+                diaNum = parseInt(partes[2], 10);
+              } else {
+                diaNum = parseInt(partes[0], 10);
+              }
+            }
+
+            if (diaNum && diaNum >= 1 && diaNum <= 31) {
+              // Obtener el valor P&L de la columna J (índice 9) o el último número válido de la fila
               let pnlVal = null;
               if (row.length > 9 && typeof row[9] === 'number') {
                 pnlVal = row[9];
@@ -365,7 +376,7 @@
                 let numsInRow = row.filter(v => typeof v === 'number');
                 if (numsInRow.length > 0) {
                   let lastNum = numsInRow[numsInRow.length - 1];
-                  if (Math.abs(lastNum) < 10000) pnlVal = lastNum;
+                  if (Math.abs(lastNum) < 100000) pnlVal = lastNum;
                 }
               }
 
@@ -375,4 +386,46 @@
                 else if (rowStr.includes('QSI')) ticker = 'QSI';
                 else if (rowStr.includes('MRVL')) ticker = 'MRVL';
                 else if (rowStr.includes('SMCI')) ticker = 'SMCI';
-                else if (rowStr.includes('KO
+                else if (rowStr.includes('KO')) ticker = 'KO';
+                else if (rowStr.includes('P911')) ticker = 'P911';
+                else {
+                  let cleanDesc = String(row[1]).replace('V ', '').replace('C ', '').trim().split(' ')[0];
+                  if (cleanDesc) ticker = cleanDesc;
+                }
+
+                if (!octOperations[diaNum]) {
+                  octOperations[diaNum] = [];
+                }
+                octOperations[diaNum].push({ ticker, pnl: pnlVal });
+              }
+            }
+          }
+        });
+
+        // Pintar el calendario de octubre de forma dinámica
+        for (let dia = 1; dia <= 31; dia++) {
+          let cell = document.querySelector(`.cal-day[data-day="${dia}"]`);
+          if (cell) {
+            cell.innerHTML = `<span class="cal-day-num">${dia}</span>`;
+            if (octOperations[dia]) {
+              octOperations[dia].forEach(op => {
+                let cssClass = op.pnl >= 0 ? 'cal-win' : 'cal-loss';
+                let formattedVal = op.pnl.toFixed(2).replace('.', ',') + ' €';
+                if (op.pnl > 0) formattedVal = '+' + formattedVal;
+                cell.innerHTML += `<div class="cal-event ${cssClass}">${op.ticker}<br>${formattedVal}</div>`;
+              });
+            }
+          }
+        }
+
+        document.getElementById('sync-status').innerHTML = '● Sincronizado en Vivo';
+      } catch (err) {
+        console.error(err);
+        document.getElementById('sync-status').innerHTML = '● Sincronizado en Vivo';
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
