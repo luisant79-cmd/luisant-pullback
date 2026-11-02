@@ -120,8 +120,9 @@
     .green-text { color: var(--green); }
     .red-text { color: var(--red); }
     
-    .tab-section { display: none; }
-    .tab-section.active-section { display: block; }
+    /* Control estricto de visibilidad de pestañas */
+    .tab-section { display: none !important; }
+    .tab-section.active-section { display: block !important; }
   </style>
 </head>
 <body>
@@ -137,12 +138,12 @@
 
     <!-- Pestañas Navegación -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="openTab(this, 'tab-resumen')">Resumen Cartera</button>
-      <button class="tab-btn" onclick="openTab(this, 'tab-calendario')">Calendario P&L</button>
-      <button class="tab-btn" onclick="openTab(this, 'tab-posiciones')">Posiciones & Cartera</button>
-      <button class="tab-btn" onclick="openTab(this, 'tab-operaciones')">Operaciones</button>
-      <button class="tab-btn" onclick="openTab(this, 'tab-rendimiento')">Rendimiento P&L</button>
-      <button class="tab-btn" onclick="openTab(this, 'tab-dividendos')">Dividendos & Préstamos</button>
+      <button class="tab-btn active" onclick="openTab(event, 'tab-resumen')">Resumen Cartera</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-calendario')">Calendario P&L</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-posiciones')">Posiciones & Cartera</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-operaciones')">Operaciones</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-rendimiento')">Rendimiento P&L</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-dividendos')">Dividendos & Préstamos</button>
     </div>
 
     <!-- Pestaña 1: Resumen Cartera -->
@@ -270,4 +271,54 @@
     <!-- Pestaña 4: Operaciones -->
     <div id="tab-operaciones" class="tab-section card">
       <div class="card-title">Registro de Operaciones</div>
-      <p style="color:var(--
+      <p style="color:var(--text-muted); font-size:14px; margin-top:12px;">Historial operativo detallado multicuenta.</p>
+    </div>
+
+    <!-- Pestaña 5: Rendimiento P&L -->
+    <div id="tab-rendimiento" class="tab-section card">
+      <div class="card-title">Rendimiento P&L Anual</div>
+      <p style="color:var(--text-muted); font-size:1px; margin-top:12px;">Análisis de evolución mensual y comparativa de beneficios.</p>
+    </div>
+
+    <!-- Pestaña 6: Dividendos -->
+    <div id="tab-dividendos" class="tab-section card">
+      <div class="card-title" style="font-size:16px; color:#fff; margin-bottom:12px;">Dividendos & Préstamos</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Importe Real</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Dividendos (T.DIVIDENDOS)</td>
+            <td class="green-text" style="font-weight:bold;">391,93 €</td>
+          </tr>
+          <tr>
+            <td>Remuneración + Préstamo de Acciones (C.Rem+Prest)</td>
+            <td class="green-text" style="font-weight:bold;">347,57 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // Control infalible de pestañas con display block/none forzado
+    function openTab(evt, tabId) {
+      const sections = document.getElementsByClassName("tab-section");
+      for (let i = 0; i < sections.length; i++) {
+        sections[i].classList.remove("active-section");
+      }
+      const buttons = document.getElementsByClassName("tab-btn");
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+      }
+      document.getElementById(tabId).classList.add("active-section");
+      evt.currentTarget.classList.add("active");
+    }
+  </script>
+</body>
+</html>
