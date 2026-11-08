@@ -51,7 +51,6 @@
     }
     .card-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
     
-    /* Contenedor de pestañas optimizado para Safari móvil sin bloqueos */
     .tabs {
       display: flex;
       gap: 8px;
@@ -62,7 +61,7 @@
       padding-bottom: 6px;
       white-space: nowrap;
     }
-    .tabs::-webkit-scrollbar { display: none; } /* Ocultar barra fea en iOS */
+    .tabs::-webkit-scrollbar { display: none; }
     .tab-btn {
       padding: 8px 12px;
       background: #0f172a;
@@ -96,7 +95,6 @@
       border: 1px solid var(--border);
     }
 
-    /* Tabla clásica del calendario adaptada a móviles */
     .cal-table {
       width: 100%;
       border-collapse: collapse;
@@ -159,7 +157,7 @@
       <div id="sync-status" class="badge-sync">● Operativo</div>
     </div>
 
-    <!-- Pestañas de navegación con botones optimizados para Safari -->
+    <!-- Pestañas de navegación -->
     <div class="tabs">
       <button class="tab-btn active" onclick="openTab(event, 'tab-resumen')">Resumen</button>
       <button class="tab-btn" onclick="openTab(event, 'tab-calendario')">Calendario P&L</button>
@@ -172,21 +170,21 @@
     <!-- Pestaña 1: Resumen Cartera -->
     <div id="tab-resumen" class="tab-section active-section card">
       <div class="card-title">Valor Total de la Cartera (Capital + Liquidez) • Base EUR (€)</div>
-      <div style="font-size: 24px; font-weight: 700; margin: 6px 0;">82.277,15 €</div>
-      <div style="font-size: 12px; color: var(--green); margin-bottom: 12px;">Beneficio acumulado: +7.999,40 € • Inicial: 71.018,00 €</div>
+      <div id="val-total" style="font-size: 24px; font-weight: 700; margin: 6px 0;">82.455,53 €</div>
+      <div id="val-beneficio" style="font-size: 12px; color: var(--green); margin-bottom: 12px;">Beneficio acumulado: +8.109,48 € • Inicial: 71.018,00 €</div>
       
       <div class="grid-stats">
         <div class="stat-box">
           <div class="card-title">Liquidez Disponible</div>
-          <div style="font-size: 16px; font-weight: 600; margin-top: 4px;">3.565,96 €</div>
+          <div id="val-liquidez" style="font-size: 16px; font-weight: 600; margin-top: 4px;">3.565,96 €</div>
+        </div>
+        <div class="stat-box">
+          <div class="card-title">Nuevas Aportaciones TR (H18)</div>
+          <div id="val-aportaciones" class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">0,00 €</div>
         </div>
         <div class="stat-box">
           <div class="card-title">Resultado Octubre</div>
           <div class="red-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">-135,59 €</div>
-        </div>
-        <div class="stat-box">
-          <div class="card-title">Mejor Mes (Mayo)</div>
-          <div class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">+1.755,71 €</div>
         </div>
         <div class="stat-box">
           <div class="card-title">Estrategia Activa</div>
@@ -346,6 +344,32 @@
       document.getElementById(tabId).classList.add("active-section");
       evt.currentTarget.classList.add("active");
     }
+
+    // Pón aquí la URL de tu Web App de Google Apps Script (la de ejecutables /exec)
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxWWn1B2a27h-Pl3y1Pb4rbt99oVw5jJOWI2xUbFksxIAJvz87Hyoi2moAMkNhpMtdkig/exec";
+
+    function cargarDatos() {
+      fetch(GAS_URL)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('sync-status').innerText = '● Sincronizado';
+          
+          if (data.aportacionesTR && data.aportacionesTR.length > 1) {
+            let totalAportado = 0;
+            for (let i = 1; i < data.aportacionesTR.length; i++) {
+              let val = parseFloat(data.aportacionesTR[i][2]) || 0;
+              totalAportado += val;
+            }
+            document.getElementById('val-aportaciones').innerText = totalAportado.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+          }
+        })
+        .catch(err => {
+          console.log("Cargando vista local...");
+        });
+    }
+
+    // <-- ESTA LÍNEA ES LA QUE FALTA PARA ACTIVAR LA CARGA AUTOMÁTICA
+    cargarDatos();
   </script>
 </body>
 </html>
