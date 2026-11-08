@@ -236,24 +236,25 @@
       <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:4px;">🎯 Radar de Empresas • Criterio V4</div>
       <div style="font-size:11px; color:var(--text-muted); margin-bottom:14px;">Filtrado dinámico sincronizado desde tu Google Sheet con auditoría Prompt V4.</div>
       
-      <table>
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th>Empresa / Fase</th>
-            <th>Acción Operativa</th>
-            <th>Medias V4</th>
-            <th>Auditoría Prompt V4</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-radar-body">
-          <tr>
-            <td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando radar...</td>
-          </tr>
-        </tbody>
-      </table>
+      <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table style="min-width: 650px;">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Empresa / Fase</th>
+              <th>Acción Operativa</th>
+              <th>Medias V4</th>
+              <th>Auditoría Prompt V4</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-radar-body">
+            <tr>
+              <td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando radar...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-
     <!-- Pestaña Aportaciones Trade Republic -->
     <div id="tab-aportaciones-tr" class="tab-section card">
       <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:10px;">Aportaciones • Trade Republic</div>
