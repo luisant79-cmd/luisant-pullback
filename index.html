@@ -378,7 +378,7 @@
   </div>
 
   <script>
-    // Función global para las pestañas (evita el error de referencia)
+    // Función global para las pestañas
     function openTab(evt, tabId) {
       const sections = document.getElementsByClassName("tab-section");
       for (let i = 0; i < sections.length; i++) {
@@ -398,7 +398,8 @@
       fetch(GAS_URL)
         .then(res => res.json())
         .then(data => {
-          document.getElementById('sync-status').innerText = '● Sincronizado';
+          let syncEl = document.getElementById('sync-status');
+          if (syncEl) syncEl.innerText = '● Sincronizado';
           
           // Beneficio Noviembre
           if (data.beneficioNoviembre !== undefined) {
@@ -426,38 +427,40 @@
           // Radar de Empresas V4 con Auditoría automática
           if (data.radar && data.radar.length > 0) {
             let tbody = document.getElementById('tabla-radar-body');
-            tbody.innerHTML = '';
-            
-            data.radar.forEach(item => {
-              let ticker = item.ticker || '';
-              let empresaFase = item.empresaFase || '';
-              let accion = item.accionOperativa || '';
-              let mediasV4 = item.mediasV4 || '';
-              let auditoriaV4 = item.auditoriaV4 || '';
+            if (tbody) {
+              tbody.innerHTML = '';
               
-              if (ticker.trim() !== '') {
-                let badgeClass = "yellow-text";
-                let accionUpper = accion.toUpperCase();
-                if (accionUpper.includes("APTA") || accionUpper.includes("NIVEL 2")) {
-                  badgeClass = "green-text";
-                } else if (accionUpper.includes("RECHAZADA")) {
-                  badgeClass = "red-text";
-                }
+              data.radar.forEach(item => {
+                let ticker = item.ticker || '';
+                let empresaFase = item.empresaFase || '';
+                let accion = item.accionOperativa || '';
+                let mediasV4 = item.mediasV4 || '';
+                let auditoriaV4 = item.auditoriaV4 || '';
+                
+                if (ticker.trim() !== '') {
+                  let badgeClass = "yellow-text";
+                  let accionUpper = accion.toUpperCase();
+                  if (accionUpper.includes("APTA") || accionUpper.includes("NIVEL 2")) {
+                    badgeClass = "green-text";
+                  } else if (accionUpper.includes("RECHAZADA")) {
+                    badgeClass = "red-text";
+                  }
 
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
-                  <td style="font-weight:bold; color:var(--text);">${ticker}</td>
-                  <td>${empresaFase}</td>
-                  <td class="${badgeClass}" style="font-weight:bold;">${accion}</td>
-                  <td style="font-size:11px;">${mediasV4}</td>
-                  <td style="font-size:11px; color:var(--text-muted); font-family:monospace;">${auditoriaV4}</td>
-                `;
-                tbody.appendChild(tr);
+                  let tr = document.createElement('tr');
+                  tr.innerHTML = `
+                    <td style="font-weight:bold; color:var(--text);">${ticker}</td>
+                    <td>${empresaFase}</td>
+                    <td class="${badgeClass}" style="font-weight:bold;">${accion}</td>
+                    <td style="font-size:11px;">${mediasV4}</td>
+                    <td style="font-size:11px; color:var(--text-muted); font-family:monospace;">${auditoriaV4}</td>
+                  `;
+                  tbody.appendChild(tr);
+                }
+              });
+              
+              if (tbody.innerHTML === '') {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay acciones en el radar actualmente.</td></tr>`;
               }
-            });
-            
-            if (tbody.innerHTML === '') {
-              tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay acciones en el radar actualmente.</td></tr>`;
             }
           }
         })
