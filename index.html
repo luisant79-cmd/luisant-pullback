@@ -179,7 +179,7 @@
       <button class="tab-btn" onclick="openTab(event, 'tab-dividendos')">Dividendos</button>
     </div>
 
-    <!-- Pestaña 1: Resumen Cartera (Noviembre en grande) -->
+    <!-- Pestaña 1: Resumen Cartera -->
     <div id="tab-resumen" class="tab-section active-section card">
       <div class="card-title">Valor Total de la Cartera (Capital + Liquidez) • Base EUR (€)</div>
       <div id="val-total" style="font-size: 24px; font-weight: 700; margin: 6px 0;">82.455,53 €</div>
@@ -241,34 +241,21 @@
 
     <!-- Pestaña Radar de Empresas & Prompt V4 -->
     <div id="tab-radar" class="tab-section card">
-      <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:4px;">🎯 Radar de Empresas • Prompt V4</div>
-      <div style="font-size:11px; color:var(--text-muted); margin-bottom:14px;">Filtrado previo y checklist de validación para entradas en Pullback.</div>
+      <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:4px;">🎯 Radar de Empresas • Criterio V4 (EMA50 & SMA200)</div>
+      <div style="font-size:11px; color:var(--text-muted); margin-bottom:14px;">Filtrado dinámico sincronizado desde tu Google Sheet.</div>
       
-      <div class="radar-box">
-        <div style="font-weight:600; font-size:13px; color:var(--accent); margin-bottom:6px;">Checklist Prompt V4 (5 Puntos + EMAs)</div>
-        <ul style="margin:0; padding-left:16px; font-size:12px; color:var(--text-muted); line-height:1.6;">
-          <li><strong style="color:var(--text);">1. Tendencia de Fondo:</strong> Alineación con SMA 200 y estructura alcista en diario.</li>
-          <li><strong style="color:var(--text);">2. Zona de Valor / VWAP:</strong> Corrección limpia a la media (EMA 20) o AVWAP de impulso.</li>
-          <li><strong style="color:var(--text);">3. Confirmación de Fuerza:</strong> Vela de giro en soporte o barrido con volumen.</li>
-          <li><strong style="color:var(--text);">4. Filtro de EMAs:</strong> Cruce operativo favorable (EMA 8/10 sobre EMA 20).</li>
-          <li><strong style="color:var(--text);">5. Gestión de Riesgo:</strong> Tamaño de posición ajustado y stop/salida por ATR.</li>
-        </ul>
-      </div>
-
-      <div class="card-title" style="margin-top:16px; margin-bottom:8px;">Acciones en Vigilancia (Watchlist)</div>
       <table>
         <thead>
           <tr>
             <th>Ticker</th>
-            <th>Fase / Estado</th>
+            <th>Empresa / Fase</th>
             <th>Acción Operativa</th>
+            <th>Medias V4</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tabla-radar-body">
           <tr>
-            <td style="font-weight:bold;">--</td>
-            <td>Esperando pullback a zona de valor</td>
-            <td class="yellow-text">En vigilancia</td>
+            <td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando radar...</td>
           </tr>
         </tbody>
       </table>
@@ -419,6 +406,7 @@
         .then(data => {
           document.getElementById('sync-status').innerText = '● Sincronizado';
           
+          // Beneficio Noviembre
           if (data.beneficioNoviembre !== undefined) {
             let valNov = parseFloat(data.beneficioNoviembre) || 110.08;
             let elNov = document.getElementById('val-beneficio-mes');
@@ -428,6 +416,7 @@
             }
           }
 
+          // Aportaciones Trade Republic
           if (data.aportacionesTR && data.aportacionesTR.length > 1) {
             let totalAportado = 0;
             for (let i = 1; i < data.aportacionesTR.length; i++) {
@@ -439,9 +428,47 @@
               elAport.innerText = totalAportado.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
             }
           }
+
+          // Radar de Empresas V4 (leyendo las 6 columnas del Google Sheet)
+          if (data.radar && data.radar.length > 1) {
+            let tbody = document.getElementById('tabla-radar-body');
+            tbody.innerHTML = '';
+            for (let i = 1; i < data.radar.length; i++) {
+              let row = data.radar[i];
+              let ticker = row[0] || '';
+              let empresa = row[1] || '';
+              let fase = row[2] || '';
+              let accion = row[3] || '';
+              let ema50 = row[4] || '';
+              let sma200 = row[5] || '';
+              
+              if (ticker.trim() !== '') {
+                // Color dinámico según la acción operativa
+                let badgeClass = "yellow-text";
+                let accionUpper = accion.toUpperCase();
+                if (accionUpper.includes("APTA") || accionUpper.includes("NIVEL 2")) {
+                  badgeClass = "green-text";
+                } else if (accionUpper.includes("RECHAZADA") || sma200.toUpperCase() === "DEBAJO") {
+                  badgeClass = "red-text";
+                }
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td style="font-weight:bold; color:var(--text);">${ticker}</td>
+                  <td>${empresa} <br><span style="font-size:10px; color:var(--text-muted);">${fase}</span></td>
+                  <td class="${badgeClass}" style="font-weight:bold;">${accion}</td>
+                  <td style="font-size:11px;">E50: <strong>${ema50}</strong><br>S200: <strong>${sma200}</strong></td>
+                `;
+                tbody.appendChild(tr);
+              }
+            }
+            if (tbody.innerHTML === '') {
+              tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No hay acciones en el radar actualmente.</td></tr>`;
+            }
+          }
         })
         .catch(err => {
-          console.log("Cargando vista local...");
+          console.log("Cargando vista local o error de red...");
         });
     }
 
