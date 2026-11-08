@@ -157,9 +157,10 @@
       <div id="sync-status" class="badge-sync">● Operativo</div>
     </div>
 
-    <!-- Pestañas de navegación -->
+    <!-- Pestañas de navegación con el nuevo botón de Aportaciones TR -->
     <div class="tabs">
       <button class="tab-btn active" onclick="openTab(event, 'tab-resumen')">Resumen</button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-aportaciones-tr')">Aportaciones TR</button>
       <button class="tab-btn" onclick="openTab(event, 'tab-calendario')">Calendario P&L</button>
       <button class="tab-btn" onclick="openTab(event, 'tab-posiciones')">Posiciones</button>
       <button class="tab-btn" onclick="openTab(event, 'tab-operaciones')">Operaciones</button>
@@ -167,7 +168,7 @@
       <button class="tab-btn" onclick="openTab(event, 'tab-dividendos')">Dividendos</button>
     </div>
 
-    <!-- Pestaña 1: Resumen Cartera -->
+    <!-- Pestaña 1: Resumen Cartera (Portada limpia con beneficio del mes) -->
     <div id="tab-resumen" class="tab-section active-section card">
       <div class="card-title">Valor Total de la Cartera (Capital + Liquidez) • Base EUR (€)</div>
       <div id="val-total" style="font-size: 24px; font-weight: 700; margin: 6px 0;">82.455,53 €</div>
@@ -175,12 +176,12 @@
       
       <div class="grid-stats">
         <div class="stat-box">
-          <div class="card-title">Liquidez Disponible</div>
-          <div id="val-liquidez" style="font-size: 16px; font-weight: 600; margin-top: 4px;">3.565,96 €</div>
+          <div class="card-title">Beneficio Mes Actual (Noviembre)</div>
+          <div id="val-beneficio-mes" class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">0,00 €</div>
         </div>
         <div class="stat-box">
-          <div class="card-title">Nuevas Aportaciones TR (H18)</div>
-          <div id="val-aportaciones" class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">0,00 €</div>
+          <div class="card-title">Liquidez Disponible</div>
+          <div id="val-liquidez" style="font-size: 16px; font-weight: 600; margin-top: 4px;">3.565,96 €</div>
         </div>
         <div class="stat-box">
           <div class="card-title">Resultado Octubre</div>
@@ -227,7 +228,26 @@
       </div>
     </div>
 
-    <!-- Pestaña 2: Calendario P&L -->
+    <!-- Apartado Independiente: Aportaciones Trade Republic -->
+    <div id="tab-aportaciones-tr" class="tab-section card">
+      <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:10px;">Aportaciones • Trade Republic</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Concepto / Detalle</th>
+            <th>Importe Acumulado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Nuevas Aportaciones (Celda H18)</td>
+            <td id="val-aportaciones-tr" class="green-text" style="font-weight:bold;">0,00 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pestaña: Calendario P&L -->
     <div id="tab-calendario" class="tab-section card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <div class="card-title" style="font-size:14px; color:#fff;">Octubre 2026</div>
@@ -288,25 +308,25 @@
       </table>
     </div>
 
-    <!-- Pestaña 3: Posiciones -->
+    <!-- Pestaña: Posiciones -->
     <div id="tab-posiciones" class="tab-section card">
       <div class="card-title">Posiciones & Cartera</div>
       <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Monitoreo activo de activos y distribución por cuentas.</p>
     </div>
 
-    <!-- Pestaña 4: Operaciones -->
+    <!-- Pestaña: Operaciones -->
     <div id="tab-operaciones" class="tab-section card">
       <div class="card-title">Registro de Operaciones</div>
       <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Historial operativo detallado multicuenta.</p>
     </div>
 
-    <!-- Pestaña 5: Rendimiento P&L -->
+    <!-- Pestaña: Rendimiento P&L -->
     <div id="tab-rendimiento" class="tab-section card">
       <div class="card-title">Rendimiento P&L Anual</div>
       <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Análisis de evolución mensual y comparativa de beneficios.</p>
     </div>
 
-    <!-- Pestaña 6: Dividendos -->
+    <!-- Pestaña: Dividendos -->
     <div id="tab-dividendos" class="tab-section card">
       <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:10px;">Dividendos & Préstamos</div>
       <table>
@@ -345,8 +365,7 @@
       evt.currentTarget.classList.add("active");
     }
 
-    // Pón aquí la URL de tu Web App de Google Apps Script (la de ejecutables /exec)
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxWWn1B2a27h-Pl3y1Pb4rbt99oVw5jJOWI2xUbFksxIAJvz87Hyoi2moAMkNhpMtdkig/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxWWn1B2a27h-P3y1Pb4rbt99oVw5jJOWI2uBFksxIAJvz87Hyoi2moAMkNhpMtdkig/exec";
 
     function cargarDatos() {
       fetch(GAS_URL)
@@ -360,7 +379,7 @@
               let val = parseFloat(data.aportacionesTR[i][2]) || 0;
               totalAportado += val;
             }
-            document.getElementById('val-aportaciones').innerText = totalAportado.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+            document.getElementById('val-aportaciones-tr').innerText = totalAportado.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
           }
         })
         .catch(err => {
@@ -368,7 +387,6 @@
         });
     }
 
-    // <-- ESTA LÍNEA ES LA QUE FALTA PARA ACTIVAR LA CARGA AUTOMÁTICA
     cargarDatos();
   </script>
 </body>
