@@ -298,4 +298,175 @@
             <td><span class="cal-day-num">5</span></td>
             <td><span class="cal-day-num">6</span></td>
             <td><span class="cal-day-num">7</span></td>
-            <td><span class="cal-day-num">8</span><div class="cal-event cal-loss
+            <td><span class="cal-day-num">8</span><div class="cal-event cal-loss">P911<br>-429,89€</div></td>
+            <td><span class="cal-day-num">9</span></td>
+            <td><span class="cal-day-num">10</span></td>
+            <td><span class="cal-day-num">11</span></td>
+          </tr>
+          <tr>
+            <td><span class="cal-day-num">12</span></td>
+            <td><span class="cal-day-num">13</span></td>
+            <td><span class="cal-day-num">14</span></td>
+            <td><span class="cal-day-num">15</span></td>
+            <td><span class="cal-day-num">16</span><div class="cal-event cal-win">KO<br>+31,30€</div></td>
+            <td><span class="cal-day-num">17</span></td>
+            <td><span class="cal-day-num">18</span></td>
+          </tr>
+          <tr>
+            <td><span class="cal-day-num">19</span></td>
+            <td><span class="cal-day-num">20</span></td>
+            <td><span class="cal-day-num">21</span></td>
+            <td><span class="cal-day-num">22</span></td>
+            <td><span class="cal-day-num">23</span></td>
+            <td><span class="cal-day-num">24</span></td>
+            <td><span class="cal-day-num">25</span></td>
+          </tr>
+          <tr>
+            <td><span class="cal-day-num">26</span></td>
+            <td><span class="cal-day-num">27</span></td>
+            <td><span class="cal-day-num">28</span></td>
+            <td><span class="cal-day-num">29</span></td>
+            <td><span class="cal-day-num">30</span><div class="cal-event cal-loss">SMCI<br>-8,05€</div></td>
+            <td><span class="cal-day-num">31</span></td>
+            <td class="cal-empty"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pestaña Posiciones -->
+    <div id="tab-posiciones" class="tab-section card">
+      <div class="card-title">Posiciones & Cartera</div>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Monitoreo activo de activos y distribución por cuentas.</p>
+    </div>
+
+    <!-- Pestaña Operaciones -->
+    <div id="tab-operaciones" class="tab-section card">
+      <div class="card-title">Registro de Operaciones</div>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Historial operativo detallado multicuenta.</p>
+    </div>
+
+    <!-- Pestaña Rendimiento -->
+    <div id="tab-rendimiento" class="tab-section card">
+      <div class="card-title">Rendimiento P&L Anual</div>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Análisis de evolución mensual y comparativa de beneficios.</p>
+    </div>
+
+    <!-- Pestaña Dividendos -->
+    <div id="tab-dividendos" class="tab-section card">
+      <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:10px;">Dividendos & Préstamos</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Importe Real</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Dividendos (T.DIVIDENDOS)</td>
+            <td class="green-text" style="font-weight:bold;">391,93 €</td>
+          </tr>
+          <tr>
+            <td>Remuneración + Préstamo de Acciones</td>
+            <td class="green-text" style="font-weight:bold;">347,57 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    function openTab(evt, tabId) {
+      const sections = document.getElementsByClassName("tab-section");
+      for (let i = 0; i < sections.length; i++) {
+        sections[i].classList.remove("active-section");
+      }
+      const buttons = document.getElementsByClassName("tab-btn");
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+      }
+      document.getElementById(tabId).classList.add("active-section");
+      evt.currentTarget.classList.add("active");
+    }
+
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxWWn1B2a27h-Pl3y1Pb4rbt99oVw5jJOWI2xUbFksxIAJvz87Hyoi2moAMkNhpMtdkig/exec";
+
+    function cargarDatos() {
+      fetch(GAS_URL)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('sync-status').innerText = '● Sincronizado';
+          
+          // Beneficio Noviembre
+          if (data.beneficioNoviembre !== undefined) {
+            let valNov = parseFloat(data.beneficioNoviembre) || 110.08;
+            let elNov = document.getElementById('val-beneficio-mes');
+            if (elNov) {
+              elNov.innerText = (valNov >= 0 ? '+' : '') + valNov.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+              elNov.className = valNov >= 0 ? 'green-text' : 'red-text';
+            }
+          }
+
+          // Aportaciones Trade Republic
+          if (data.aportacionesTR && data.aportacionesTR.length > 1) {
+            let totalAportado = 0;
+            for (let i = 1; i < data.aportacionesTR.length; i++) {
+              let val = parseFloat(data.aportacionesTR[i][2]) || 0;
+              totalAportado += val;
+            }
+            let elAport = document.getElementById('val-aportaciones-tr');
+            if (elAport) {
+              elAport.innerText = totalAportado.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+            }
+          }
+
+          // Radar de Empresas V4 (leyendo el JSON devuelto por Google Apps Script)
+          if (data.radar && data.radar.length > 0) {
+            let tbody = document.getElementById('tabla-radar-body');
+            tbody.innerHTML = '';
+            
+            data.radar.forEach(item => {
+              let ticker = item.ticker || '';
+              let empresaFase = item.empresaFase || '';
+              let accion = item.accionOperativa || '';
+              let mediasV4 = item.mediasV4 || '';
+              let auditoriaV4 = item.auditoriaV4 || '';
+              
+              if (ticker.trim() !== '') {
+                // Color dinámico según la acción operativa
+                let badgeClass = "yellow-text";
+                let accionUpper = accion.toUpperCase();
+                if (accionUpper.includes("APTA") || accionUpper.includes("NIVEL 2")) {
+                  badgeClass = "green-text";
+                } else if (accionUpper.includes("RECHAZADA")) {
+                  badgeClass = "red-text";
+                }
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td style="font-weight:bold; color:var(--text);">${ticker}</td>
+                  <td>${empresaFase}</td>
+                  <td class="${badgeClass}" style="font-weight:bold;">${accion}</td>
+                  <td style="font-size:11px;">${mediasV4.replace(/\n/g, '<br>')}</td>
+                  <td style="font-size:11px; color:var(--text-muted); font-family:monospace;">${auditoriaV4}</td>
+                `;
+                tbody.appendChild(tr);
+              }
+            });
+            
+            if (tbody.innerHTML === '') {
+              tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay acciones en el radar actualmente.</td></tr>`;
+            }
+          }
+        })
+        .catch(err => {
+          console.log("Cargando vista local o error de red...", err);
+        });
+    }
+
+    cargarDatos();
+  </script>
+</body>
+</html>
