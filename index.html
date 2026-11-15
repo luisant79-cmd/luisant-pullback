@@ -322,7 +322,7 @@
             <tr><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th></tr>
           </thead>
           <tbody>
-            <!-- Se genera dinámicamente con JS -->
+            <!-- Generado por JS -->
           </tbody>
         </table>
       </div>
@@ -415,49 +415,51 @@
       if (btnNov) btnNov.classList.toggle('active', mes === 'noviembre');
     }
 
-    // Generar estructura de celdas para Noviembre 2026 (empieza en Domingo: 1 de nov = Dom)
+    // Parser robusto para extraer el día de cualquier formato de fecha de noviembre
     function construirCalendarioNoviembre(operaciones) {
       let tbody = document.querySelector('#tabla-cal-noviembre tbody');
       if (!tbody) return;
       
-      // Mapear operaciones por día del mes
       let opsPorDia = {};
       if (operaciones && Array.isArray(operaciones)) {
         operaciones.forEach(op => {
-          // formato esperado DD/MM/YYYY o YYYY-MM-DD
-          let partes = op.fecha.includes('/') ? op.fecha.split('/') : op.fecha.split('-');
-          if (partes.length === 3) {
-            let dia, mes, anio;
-            if (partes[0].length === 4) { // YYYY-MM-DD
-              anio = partes[0]; mes = partes[1]; dia = partes[2];
-            } else { // DD/MM/YYYY
-              dia = partes[0]; mes = partes[1]; anio = partes[2];
+          let fechaStr = op.fecha || "";
+          let dNum = null;
+
+          // Detectar si la fecha pertenece a Noviembre 2026 ("11" o "nov")
+          if (fechaStr.includes("2026-11") || fechaStr.includes("/11/2026") || fechaStr.includes("2026/11")) {
+            let partes = fechaStr.split(/[-/T]/);
+            if (partes.length >= 3) {
+              // Si viene como YYYY-MM-DD
+              if (partes[0].length === 4) {
+                dNum = parseInt(partes[2], 10);
+              } else { // DD-MM-YYYY o DD/MM/YYYY
+                dNum = parseInt(partes[0], 10);
+              }
             }
-            if (parseInt(mes) === 11 && parseInt(anio) === 2026) {
-              let dNum = parseInt(dia);
-              if (!opsPorDia[dNum]) opsPorDia[dNum] = [];
-              opsPorDia[dNum].push(op);
-            }
+          }
+
+          if (dNum && !isNaN(dNum) && dNum >= 1 && dNum <= 30) {
+            if (!opsPorDia[dNum]) opsPorDia[dNum] = [];
+            opsPorDia[dNum].push(op);
           }
         });
       }
 
-      // Noviembre 2026 tiene 30 días. El 1 de noviembre es Domingo (columna index 6 en formato L-D).
-      // Grid: 6 filas x 7 columnas.
+      // Noviembre 2026: el día 1 es Domingo
       let html = '';
       let diaContador = 1;
       
-      // Fila 1: El 1 cae en Domingo (L, M, M, J, V, S vacíos, D = 1)
+      // Fila 1: 6 celdas vacías (L a S) y el Domingo 1
       html += '<tr>';
       for (let i = 0; i < 6; i++) {
         html += '<td class="cal-empty"></td>';
       }
-      // Domingo 1
       html += renderCeldaDia(1, opsPorDia[1]);
       html += '</tr>';
       diaContador = 2;
 
-      // Resto de filas hasta el 30
+      // Resto de días hasta el 30
       while (diaContador <= 30) {
         html += '<tr>';
         for (let col = 0; col < 7; col++) {
@@ -496,26 +498,22 @@
           
           if (!data) return;
 
-          // Capital Total
           if (data.capitalTotal !== undefined) {
             let elCap = document.getElementById('val-total');
             if (elCap) elCap.innerText = parseFloat(data.capitalTotal).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
           }
 
-          // Beneficio Acumulado
           if (data.beneficioAcumulado !== undefined) {
             let valAc = parseFloat(data.beneficioAcumulado);
             let elBen = document.getElementById('val-beneficio');
             if (elBen) elBen.innerText = `Beneficio acumulado: +${valAc.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })} • Inicial: 71.018,00 €`;
           }
 
-          // Liquidez Disponible (Celda R19 General)
           if (data.liquidezDisponible !== undefined) {
             let elLiq = document.getElementById('val-liquidez');
             if (elLiq) elLiq.innerText = parseFloat(data.liquidezDisponible).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
           }
 
-          // Beneficio Noviembre
           if (data.beneficioNoviembre !== undefined) {
             let valNov = parseFloat(data.beneficioNoviembre);
             let textoNov = (valNov >= 0 ? '+' : '') + valNov.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
@@ -534,7 +532,6 @@
             }
           }
 
-          // Aportaciones TR
           if (data.totalAportacionesTR !== undefined) {
             let elAport = document.getElementById('val-aportaciones-tr');
             if (elAport) {
@@ -542,7 +539,6 @@
             }
           }
 
-          // Dividendos
           if (data.totalDividendos !== undefined) {
             let elDiv = document.getElementById('val-dividendos');
             if (elDiv) {
@@ -550,11 +546,10 @@
             }
           }
 
-          // Construir Calendario de Noviembre con operaciones reales
-          construirCalendarioNoviembre(data.operacionesRecientes);
-
-          // Pintar operaciones en tablas
+          // Inyectar operaciones en el calendario y tablas
           if (data.operacionesRecientes && Array.isArray(data.operacionesRecientes)) {
+            construirCalendarioNoviembre(data.operacionesRecientes);
+
             let htmlOpsCompleta = '';
             data.operacionesRecientes.forEach(op => {
               let colorClass = op.pl >= 0 ? 'green-text' : 'red-text';
@@ -594,7 +589,6 @@
             }
           }
 
-          // Radar V4 (Todas las acciones)
           if (data.radar && Array.isArray(data.radar) && data.radar.length > 0) {
             let tbody = document.getElementById('tabla-radar-body');
             if (tbody) {
