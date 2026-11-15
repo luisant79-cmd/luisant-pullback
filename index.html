@@ -156,7 +156,7 @@
         <h1>$LUISANT PULLBACK</h1>
         <div class="subtitle">Técnica, paciencia y disciplina • Cartera Global</div>
       </div>
-      <div id="sync-status" class="badge-sync">● Operativo</div>
+      <div id="sync-status" class="badge-sync">● Sincronizando...</div>
     </div>
 
     <!-- Pestañas de navegación -->
@@ -174,30 +174,30 @@
     <!-- Pestaña 1: Resumen Cartera -->
     <div id="tab-resumen" class="tab-section active-section card">
       <div class="card-title">Valor Total de la Cartera (Capital + Liquidez) • Base EUR (€)</div>
-      <div id="val-total" style="font-size: 24px; font-weight: 700; margin: 6px 0;">82.553,50 €</div>
-      <div id="val-beneficio" style="font-size: 12px; color: var(--green); margin-bottom: 12px;">Beneficio acumulado: +8.186,10 € • Inicial: 71.018,00 €</div>
+      <div id="val-total" style="font-size: 24px; font-weight: 700; margin: 6px 0;">-- €</div>
+      <div id="val-beneficio" style="font-size: 12px; color: var(--green); margin-bottom: 12px;">Cargando beneficio acumulado...</div>
       
       <div class="grid-stats">
         <div class="stat-box">
           <div class="card-title">Resultado Noviembre</div>
-          <div id="val-beneficio-mes" class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">+186,70 €</div>
+          <div id="val-beneficio-mes" class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">-- €</div>
         </div>
         <div class="stat-box">
           <div class="card-title">Liquidez Disponible</div>
-          <div id="val-liquidez" style="font-size: 16px; font-weight: 600; margin-top: 4px;">3.565,96 €</div>
-        </div>
-        <div class="stat-box">
-          <div class="card-title">Mejor Mes (Mayo)</div>
-          <div class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">+1.755,71 €</div>
+          <div id="val-liquidez" style="font-size: 16px; font-weight: 600; margin-top: 4px;">-- €</div>
         </div>
         <div class="stat-box">
           <div class="card-title">Estrategia Activa</div>
-          <div style="font-size: 14px; font-weight: 600; margin-top: 4px; color: var(--accent);">Pullback & Reclaim</div>
+          <div style="font-size: 14px; font-weight: 600; margin-top: 4px; color: var(--accent);">Pullback & Reclaim (Multi-cuenta)</div>
+        </div>
+        <div class="stat-box">
+          <div class="card-title">Disciplina Operativa</div>
+          <div style="font-size: 14px; font-weight: 600; margin-top: 4px; color: var(--green);">Gestión por ATR</div>
         </div>
       </div>
 
       <div style="margin-top: 20px;">
-        <div class="card-title" style="margin-bottom: 8px;">Últimas Operaciones Sincronizadas</div>
+        <div class="card-title" style="margin-bottom: 8px;">Últimas Operaciones Sincronizadas (Sheet)</div>
         <table>
           <thead>
             <tr>
@@ -207,24 +207,9 @@
               <th>Estado</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="tabla-ultimas-ops">
             <tr>
-              <td>30/10/2026</td>
-              <td>SMCI (20 acc)</td>
-              <td class="red-text">-8,05 €</td>
-              <td>Cerrada</td>
-            </tr>
-            <tr>
-              <td>16/10/2026</td>
-              <td>KO (Coca-Cola)</td>
-              <td class="green-text">+31,30 €</td>
-              <td>Cerrada</td>
-            </tr>
-            <tr>
-              <td>08/10/2026</td>
-              <td>P911 (Porsche)</td>
-              <td class="red-text">-429,89 €</td>
-              <td>Cerrada</td>
+              <td colspan="4" style="text-align:center; color:var(--text-muted);">Sincronizando operaciones...</td>
             </tr>
           </tbody>
         </table>
@@ -269,13 +254,13 @@
         <tbody>
           <tr>
             <td>Total Nuevas Aportaciones</td>
-            <td id="val-aportaciones-tr" class="green-text" style="font-weight:bold;">95,00 €</td>
+            <td id="val-aportaciones-tr" class="green-text" style="font-weight:bold;">-- €</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Pestaña Calendario P&L (Noviembre por defecto, con Octubre alternativo) -->
+    <!-- Pestaña Calendario P&L -->
     <div id="tab-calendario" class="tab-section card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <div class="card-title" style="font-size:14px; color:#fff;">Calendario P&L</div>
@@ -285,7 +270,7 @@
         </div>
       </div>
 
-      <!-- Contenedor Octubre (Oculto por defecto) -->
+      <!-- Contenedor Octubre -->
       <div id="cal-octubre" class="cal-mes-container" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <span style="font-size:12px; font-weight:600; color:var(--text);">Octubre 2026</span>
@@ -293,59 +278,36 @@
         </div>
         <table class="cal-table">
           <thead>
-            <tr>
-              <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
-            </tr>
+            <tr><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th></tr>
           </thead>
           <tbody>
             <tr>
               <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
-              <td><span class="cal-day-num">1</span></td>
-              <td><span class="cal-day-num">2</span></td>
-              <td><span class="cal-day-num">3</span></td>
-              <td><span class="cal-day-num">4</span></td>
+              <td><span class="cal-day-num">1</span></td><td><span class="cal-day-num">2</span></td><td><span class="cal-day-num">3</span></td><td><span class="cal-day-num">4</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">5</span></td>
-              <td><span class="cal-day-num">6</span></td>
-              <td><span class="cal-day-num">7</span></td>
+              <td><span class="cal-day-num">5</span></td><td><span class="cal-day-num">6</span></td><td><span class="cal-day-num">7</span></td>
               <td><span class="cal-day-num">8</span><div class="cal-event cal-loss">P911<br>-429,89€</div></td>
-              <td><span class="cal-day-num">9</span></td>
-              <td><span class="cal-day-num">10</span></td>
-              <td><span class="cal-day-num">11</span></td>
+              <td><span class="cal-day-num">9</span></td><td><span class="cal-day-num">10</span></td><td><span class="cal-day-num">11</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">12</span></td>
-              <td><span class="cal-day-num">13</span></td>
-              <td><span class="cal-day-num">14</span></td>
-              <td><span class="cal-day-num">15</span></td>
+              <td><span class="cal-day-num">12</span></td><td><span class="cal-day-num">13</span></td><td><span class="cal-day-num">14</span></td><td><span class="cal-day-num">15</span></td>
               <td><span class="cal-day-num">16</span><div class="cal-event cal-win">KO<br>+31,30€</div></td>
-              <td><span class="cal-day-num">17</span></td>
-              <td><span class="cal-day-num">18</span></td>
+              <td><span class="cal-day-num">17</span></td><td><span class="cal-day-num">18</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">19</span></td>
-              <td><span class="cal-day-num">20</span></td>
-              <td><span class="cal-day-num">21</span></td>
-              <td><span class="cal-day-num">22</span></td>
-              <td><span class="cal-day-num">23</span></td>
-              <td><span class="cal-day-num">24</span></td>
-              <td><span class="cal-day-num">25</span></td>
+              <td><span class="cal-day-num">19</span></td><td><span class="cal-day-num">20</span></td><td><span class="cal-day-num">21</span></td><td><span class="cal-day-num">22</span></td><td><span class="cal-day-num">23</span></td><td><span class="cal-day-num">24</span></td><td><span class="cal-day-num">25</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">26</span></td>
-              <td><span class="cal-day-num">27</span></td>
-              <td><span class="cal-day-num">28</span></td>
-              <td><span class="cal-day-num">29</span></td>
+              <td><span class="cal-day-num">26</span></td><td><span class="cal-day-num">27</span></td><td><span class="cal-day-num">28</span></td><td><span class="cal-day-num">29</span></td>
               <td><span class="cal-day-num">30</span><div class="cal-event cal-loss">SMCI<br>-8,05€</div></td>
-              <td><span class="cal-day-num">31</span></td>
-              <td class="cal-empty"></td>
+              <td><span class="cal-day-num">31</span></td><td class="cal-empty"></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Contenedor Noviembre (Visible por defecto) -->
+      <!-- Contenedor Noviembre -->
       <div id="cal-noviembre" class="cal-mes-container">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <span style="font-size:12px; font-weight:600; color:var(--text);">Noviembre 2026</span>
@@ -353,57 +315,27 @@
         </div>
         <table class="cal-table">
           <thead>
-            <tr>
-              <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
-            </tr>
+            <tr><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th></tr>
           </thead>
           <tbody>
             <tr>
-              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
-              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
+              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
               <td><span class="cal-day-num">1</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">2</span></td>
-              <td><span class="cal-day-num">3</span></td>
-              <td><span class="cal-day-num">4</span></td>
-              <td><span class="cal-day-num">5</span></td>
-              <td><span class="cal-day-num">6</span></td>
-              <td><span class="cal-day-num">7</span></td>
-              <td><span class="cal-day-num">8</span></td>
+              <td><span class="cal-day-num">2</span></td><td><span class="cal-day-num">3</span></td><td><span class="cal-day-num">4</span></td><td><span class="cal-day-num">5</span></td><td><span class="cal-day-num">6</span></td><td><span class="cal-day-num">7</span></td><td><span class="cal-day-num">8</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">9</span></td>
-              <td><span class="cal-day-num">10</span></td>
-              <td><span class="cal-day-num">11</span></td>
-              <td><span class="cal-day-num">12</span></td>
-              <td><span class="cal-day-num">13</span></td>
-              <td><span class="cal-day-num">14</span></td>
-              <td><span class="cal-day-num">15</span></td>
+              <td><span class="cal-day-num">9</span></td><td><span class="cal-day-num">10</span></td><td><span class="cal-day-num">11</span></td><td><span class="cal-day-num">12</span></td><td><span class="cal-day-num">13</span></td><td><span class="cal-day-num">14</span></td><td><span class="cal-day-num">15</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">16</span></td>
-              <td><span class="cal-day-num">17</span></td>
-              <td><span class="cal-day-num">18</span></td>
-              <td><span class="cal-day-num">19</span></td>
-              <td><span class="cal-day-num">20</span></td>
-              <td><span class="cal-day-num">21</span></td>
-              <td><span class="cal-day-num">22</span></td>
+              <td><span class="cal-day-num">16</span></td><td><span class="cal-day-num">17</span></td><td><span class="cal-day-num">18</span></td><td><span class="cal-day-num">19</span></td><td><span class="cal-day-num">20</span></td><td><span class="cal-day-num">21</span></td><td><span class="cal-day-num">22</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">23</span></td>
-              <td><span class="cal-day-num">24</span></td>
-              <td><span class="cal-day-num">25</span></td>
-              <td><span class="cal-day-num">26</span></td>
-              <td><span class="cal-day-num">27</span></td>
-              <td><span class="cal-day-num">28</span></td>
-              <td><span class="cal-day-num">29</span></td>
+              <td><span class="cal-day-num">23</span></td><td><span class="cal-day-num">24</span></td><td><span class="cal-day-num">25</span></td><td><span class="cal-day-num">26</span></td><td><span class="cal-day-num">27</span></td><td><span class="cal-day-num">28</span></td><td><span class="cal-day-num">29</span></td>
             </tr>
             <tr>
-              <td><span class="cal-day-num">30</span></td>
-              <td class="cal-empty"></td><td class="cal-empty"></td>
-              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
-              <td class="cal-empty"></td>
+              <td><span class="cal-day-num">30</span></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
             </tr>
           </tbody>
         </table>
@@ -412,20 +344,36 @@
 
     <!-- Pestaña Posiciones -->
     <div id="tab-posiciones" class="tab-section card">
-      <div class="card-title">Posiciones & Cartera</div>
-      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Monitoreo activo de activos y distribución por cuentas.</p>
+      <div class="card-title">Posiciones & Cartera (Multicuenta)</div>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Gestión activa por niveles y cuentas distribuidas.</p>
     </div>
 
     <!-- Pestaña Operaciones -->
     <div id="tab-operaciones" class="tab-section card">
-      <div class="card-title">Registro de Operaciones</div>
-      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Historial operativo detallado multicuenta.</p>
+      <div class="card-title">Registro Completo de Operaciones</div>
+      <div style="width:100%; overflow-x:auto; margin-top:10px;">
+        <table style="min-width:600px;">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Activo / Ticker</th>
+              <th>P&L (€)</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-operaciones-completa">
+            <tr>
+              <td colspan="4" style="text-align:center; color:var(--text-muted);">Cargando registro...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Pestaña Rendimiento -->
     <div id="tab-rendimiento" class="tab-section card">
       <div class="card-title">Rendimiento P&L Anual</div>
-      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Análisis de evolución mensual y comparativa de beneficios.</p>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Evolución mensual y comparativa.</p>
     </div>
 
     <!-- Pestaña Dividendos -->
@@ -441,7 +389,7 @@
         <tbody>
           <tr>
             <td>Total Dividendos</td>
-            <td id="val-dividendos" class="green-text" style="font-weight:bold;">399,49 €</td>
+            <td id="val-dividendos" class="green-text" style="font-weight:bold;">-- €</td>
           </tr>
           <tr>
             <td>Remuneración + Préstamo de Acciones</td>
@@ -454,7 +402,6 @@
   </div>
 
   <script>
-    // Función global para las pestañas principales
     function openTab(evt, tabId) {
       const sections = document.getElementsByClassName("tab-section");
       for (let i = 0; i < sections.length; i++) {
@@ -464,12 +411,11 @@
       for (let i = 0; i < buttons.length; i++) {
         buttons[i].classList.remove("active");
       }
-      const target = document.getElementById(tabId);
+      let target = document.getElementById(tabId);
       if (target) target.classList.add("active-section");
       if (evt && evt.currentTarget) evt.currentTarget.classList.add("active");
     }
 
-    // Función para alternar entre los meses en el calendario P&L
     function cambiarMes(mes) {
       let oct = document.getElementById('cal-octubre');
       let nov = document.getElementById('cal-noviembre');
@@ -513,7 +459,7 @@
             if (elLiq) elLiq.innerText = parseFloat(data.liquidezDisponible).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
           }
 
-          // Beneficio Noviembre (Resumen + Cabecera Calendario)
+          // Beneficio Noviembre
           if (data.beneficioNoviembre !== undefined) {
             let valNov = parseFloat(data.beneficioNoviembre);
             let textoNov = (valNov >= 0 ? '+' : '') + valNov.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
@@ -532,7 +478,7 @@
             }
           }
 
-          // Aportaciones Trade Republic exactas
+          // Aportaciones TR
           if (data.totalAportacionesTR !== undefined) {
             let elAport = document.getElementById('val-aportaciones-tr');
             if (elAport) {
@@ -540,7 +486,7 @@
             }
           }
 
-          // Total Dividendos
+          // Dividendos
           if (data.totalDividendos !== undefined) {
             let elDiv = document.getElementById('val-dividendos');
             if (elDiv) {
@@ -548,45 +494,82 @@
             }
           }
 
-          // Radar de Empresas V4
+          // Pintar operaciones recientes y completas desde el Sheet
+          if (data.operacionesRecientes && Array.isArray(data.operacionesRecientes)) {
+            let htmlOps = '';
+            let htmlOpsCompleta = '';
+            
+            data.operacionesRecientes.forEach(op => {
+              let colorClass = op.pl >= 0 ? 'green-text' : 'red-text';
+              let signo = op.pl >= 0 ? '+' : '';
+              let rowHtml = `
+                <tr>
+                  <td>${op.fecha}</td>
+                  <td style="font-weight:bold;">${op.activo}</td>
+                  <td class="${colorClass}">${signo}${op.pl.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</td>
+                  <td>${op.estado}</td>
+                </tr>
+              `;
+              htmlOpsCompleta += rowHtml;
+              // Tomar las últimas 3 para el resumen
+            });
+
+            let tbodyOps = document.getElementById('tabla-ultimas-ops');
+            if (tbodyOps && data.operacionesRecientes.length > 0) {
+              let ultimas = data.operacionesRecientes.slice(-3).reverse();
+              let htmlUltimas = '';
+              ultimas.forEach(op => {
+                let colorClass = op.pl >= 0 ? 'green-text' : 'red-text';
+                let signo = op.pl >= 0 ? '+' : '';
+                htmlUltimas += `
+                  <tr>
+                    <td>${op.fecha}</td>
+                    <td style="font-weight:bold;">${op.activo}</td>
+                    <td class="${colorClass}">${signo}${op.pl.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</td>
+                    <td>${op.estado}</td>
+                  </tr>
+                `;
+              });
+              tbodyOps.innerHTML = htmlUltimas;
+            }
+
+            let tbodyCompleta = document.getElementById('tabla-operaciones-completa');
+            if (tbodyCompleta && htmlOpsCompleta !== '') {
+              tbodyCompleta.innerHTML = htmlOpsCompleta;
+            }
+          }
+
+          // Radar V4
           if (data.radar && Array.isArray(data.radar) && data.radar.length > 0) {
             let tbody = document.getElementById('tabla-radar-body');
             if (tbody) {
               tbody.innerHTML = '';
               data.radar.forEach(item => {
-                let ticker = item.ticker || '';
-                let empresaFase = item.empresaFase || '';
-                let accion = item.accionOperativa || '';
-                let mediasV4 = item.mediasV4 || '';
-                let auditoriaV4 = item.auditoriaV4 || '';
-                
-                if (ticker.trim() !== '') {
-                  let badgeClass = "yellow-text";
-                  let accionUpper = accion.toUpperCase();
-                  if (accionUpper.includes("APTA") || accionUpper.includes("NIVEL 2")) {
-                    badgeClass = "green-text";
-                  } else if (accionUpper.includes("RECHAZADA")) {
-                    badgeClass = "red-text";
-                  }
-
-                  let tr = document.createElement('tr');
-                  tr.innerHTML = `
-                    <td style="font-weight:bold; color:var(--text);">${ticker}</td>
-                    <td>${empresaFase}</td>
-                    <td class="${badgeClass}" style="font-weight:bold;">${accion}</td>
-                    <td style="font-size:11px;">${mediasV4}</td>
-                    <td style="font-size:11px; color:var(--text-muted); font-family:monospace;">${auditoriaV4}</td>
-                  `;
-                  tbody.appendChild(tr);
+                let badgeClass = "yellow-text";
+                let accionUpper = (item.accionOperativa || '').toUpperCase();
+                if (accionUpper.includes("APTA") || accionUpper.includes("NIVEL 2")) {
+                  badgeClass = "green-text";
+                } else if (accionUpper.includes("RECHAZADA")) {
+                  badgeClass = "red-text";
                 }
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td style="font-weight:bold; color:var(--text);">${item.ticker}</td>
+                  <td>${item.empresaFase}</td>
+                  <td class="${badgeClass}" style="font-weight:bold;">${item.accionOperativa}</td>
+                  <td style="font-size:11px;">${item.mediasV4}</td>
+                  <td style="font-size:11px; color:var(--text-muted); font-family:monospace;">${item.auditoriaV4}</td>
+                `;
+                tbody.appendChild(tr);
               });
             }
           }
         })
         .catch(err => {
           let syncEl = document.getElementById('sync-status');
-          if (syncEl) syncEl.innerText = '● Modo Local / Error Red';
-          console.log("Aviso de red o CORS:", err);
+          if (syncEl) syncEl.innerText = '● Sincronización Local / Red';
+          console.log("Error conectando con GAS:", err);
         });
     }
 
