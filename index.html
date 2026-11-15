@@ -413,4 +413,184 @@
     <!-- Pestaña Posiciones -->
     <div id="tab-posiciones" class="tab-section card">
       <div class="card-title">Posiciones & Cartera</div>
-      <p style="color:
+      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Monitoreo activo de activos y distribución por cuentas.</p>
+    </div>
+
+    <!-- Pestaña Operaciones -->
+    <div id="tab-operaciones" class="tab-section card">
+      <div class="card-title">Registro de Operaciones</div>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Historial operativo detallado multicuenta.</p>
+    </div>
+
+    <!-- Pestaña Rendimiento -->
+    <div id="tab-rendimiento" class="tab-section card">
+      <div class="card-title">Rendimiento P&L Anual</div>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Análisis de evolución mensual y comparativa de beneficios.</p>
+    </div>
+
+    <!-- Pestaña Dividendos -->
+    <div id="tab-dividendos" class="tab-section card">
+      <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:10px;">Dividendos & Préstamos</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Importe Real</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Dividendos</td>
+            <td id="val-dividendos" class="green-text" style="font-weight:bold;">399,49 €</td>
+          </tr>
+          <tr>
+            <td>Remuneración + Préstamo de Acciones</td>
+            <td class="green-text" style="font-weight:bold;">347,57 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // Función global para las pestañas principales
+    function openTab(evt, tabId) {
+      const sections = document.getElementsByClassName("tab-section");
+      for (let i = 0; i < sections.length; i++) {
+        sections[i].classList.remove("active-section");
+      }
+      const buttons = document.getElementsByClassName("tab-btn");
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+      }
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add("active-section");
+      if (evt && evt.currentTarget) evt.currentTarget.classList.add("active");
+    }
+
+    // Función para alternar entre los meses en el calendario P&L
+    function cambiarMes(mes) {
+      let oct = document.getElementById('cal-octubre');
+      let nov = document.getElementById('cal-noviembre');
+      let btnOct = document.getElementById('btn-oct');
+      let btnNov = document.getElementById('btn-nov');
+
+      if (oct) oct.style.display = mes === 'octubre' ? 'block' : 'none';
+      if (nov) nov.style.display = mes === 'noviembre' ? 'block' : 'none';
+      
+      if (btnOct) btnOct.classList.toggle('active', mes === 'octubre');
+      if (btnNov) btnNov.classList.toggle('active', mes === 'noviembre');
+    }
+
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxWWn1B2a27h-Pl3y1Pb4rbt99oVw5jJOWI2xUbFksxIAJvz87Hyoi2moAMkNhpMtdkig/exec";
+
+    function cargarDatos() {
+      fetch(GAS_URL)
+        .then(res => res.json())
+        .then(data => {
+          let syncEl = document.getElementById('sync-status');
+          if (syncEl) syncEl.innerText = '● Sincronizado';
+          
+          if (!data) return;
+
+          // Capital Total
+          if (data.capitalTotal !== undefined) {
+            let elCap = document.getElementById('val-total');
+            if (elCap) elCap.innerText = parseFloat(data.capitalTotal).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+          }
+
+          // Beneficio Acumulado
+          if (data.beneficioAcumulado !== undefined) {
+            let valAc = parseFloat(data.beneficioAcumulado);
+            let elBen = document.getElementById('val-beneficio');
+            if (elBen) elBen.innerText = `Beneficio acumulado: +${valAc.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })} • Inicial: 71.018,00 €`;
+          }
+
+          // Liquidez Disponible
+          if (data.liquidezDisponible !== undefined) {
+            let elLiq = document.getElementById('val-liquidez');
+            if (elLiq) elLiq.innerText = parseFloat(data.liquidezDisponible).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+          }
+
+          // Beneficio Noviembre (Resumen + Cabecera Calendario)
+          if (data.beneficioNoviembre !== undefined) {
+            let valNov = parseFloat(data.beneficioNoviembre);
+            let textoNov = (valNov >= 0 ? '+' : '') + valNov.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+            let claseNov = valNov >= 0 ? 'green-text' : 'red-text';
+
+            let elNov = document.getElementById('val-beneficio-mes');
+            if (elNov) {
+              elNov.innerText = textoNov;
+              elNov.className = claseNov;
+            }
+
+            let elCalNov = document.getElementById('val-cal-nov');
+            if (elCalNov) {
+              elCalNov.innerText = textoNov;
+              elCalNov.className = claseNov;
+            }
+          }
+
+          // Aportaciones Trade Republic exactas
+          if (data.totalAportacionesTR !== undefined) {
+            let elAport = document.getElementById('val-aportaciones-tr');
+            if (elAport) {
+              elAport.innerText = parseFloat(data.totalAportacionesTR).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+            }
+          }
+
+          // Total Dividendos
+          if (data.totalDividendos !== undefined) {
+            let elDiv = document.getElementById('val-dividendos');
+            if (elDiv) {
+              elDiv.innerText = parseFloat(data.totalDividendos).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+            }
+          }
+
+          // Radar de Empresas V4
+          if (data.radar && Array.isArray(data.radar) && data.radar.length > 0) {
+            let tbody = document.getElementById('tabla-radar-body');
+            if (tbody) {
+              tbody.innerHTML = '';
+              data.radar.forEach(item => {
+                let ticker = item.ticker || '';
+                let empresaFase = item.empresaFase || '';
+                let accion = item.accionOperativa || '';
+                let mediasV4 = item.mediasV4 || '';
+                let auditoriaV4 = item.auditoriaV4 || '';
+                
+                if (ticker.trim() !== '') {
+                  let badgeClass = "yellow-text";
+                  let accionUpper = accion.toUpperCase();
+                  if (accionUpper.includes("APTA") || accionUpper.includes("NIVEL 2")) {
+                    badgeClass = "green-text";
+                  } else if (accionUpper.includes("RECHAZADA")) {
+                    badgeClass = "red-text";
+                  }
+
+                  let tr = document.createElement('tr');
+                  tr.innerHTML = `
+                    <td style="font-weight:bold; color:var(--text);">${ticker}</td>
+                    <td>${empresaFase}</td>
+                    <td class="${badgeClass}" style="font-weight:bold;">${accion}</td>
+                    <td style="font-size:11px;">${mediasV4}</td>
+                    <td style="font-size:11px; color:var(--text-muted); font-family:monospace;">${auditoriaV4}</td>
+                  `;
+                  tbody.appendChild(tr);
+                }
+              });
+            }
+          }
+        })
+        .catch(err => {
+          let syncEl = document.getElementById('sync-status');
+          if (syncEl) syncEl.innerText = '● Modo Local / Error Red';
+          console.log("Aviso de red o CORS:", err);
+        });
+    }
+
+    cargarDatos();
+  </script>
+</body>
+</html>
