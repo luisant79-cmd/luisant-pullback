@@ -174,13 +174,13 @@
     <!-- Pestaña 1: Resumen Cartera -->
     <div id="tab-resumen" class="tab-section active-section card">
       <div class="card-title">Valor Total de la Cartera (Capital + Liquidez) • Base EUR (€)</div>
-      <div id="val-total" style="font-size: 24px; font-weight: 700; margin: 6px 0;">82.455,53 €</div>
-      <div id="val-beneficio" style="font-size: 12px; color: var(--green); margin-bottom: 12px;">Beneficio acumulado: +8.109,48 € • Inicial: 71.018,00 €</div>
+      <div id="val-total" style="font-size: 24px; font-weight: 700; margin: 6px 0;">82.553,50 €</div>
+      <div id="val-beneficio" style="font-size: 12px; color: var(--green); margin-bottom: 12px;">Beneficio acumulado: +8.186,10 € • Inicial: 71.018,00 €</div>
       
       <div class="grid-stats">
         <div class="stat-box">
           <div class="card-title">Resultado Noviembre</div>
-          <div id="val-beneficio-mes" class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">+110,08 €</div>
+          <div id="val-beneficio-mes" class="green-text" style="font-size: 16px; font-weight: 600; margin-top: 4px;">+186,70 €</div>
         </div>
         <div class="stat-box">
           <div class="card-title">Liquidez Disponible</div>
@@ -255,6 +255,7 @@
         </table>
       </div>
     </div>
+
     <!-- Pestaña Aportaciones Trade Republic -->
     <div id="tab-aportaciones-tr" class="tab-section card">
       <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:10px;">Aportaciones • Trade Republic</div>
@@ -268,7 +269,7 @@
         <tbody>
           <tr>
             <td>Total Nuevas Aportaciones</td>
-            <td id="val-aportaciones-tr" class="green-text" style="font-weight:bold;">0,00 €</td>
+            <td id="val-aportaciones-tr" class="green-text" style="font-weight:bold;">95,00 €</td>
           </tr>
         </tbody>
       </table>
@@ -402,9 +403,28 @@
           let syncEl = document.getElementById('sync-status');
           if (syncEl) syncEl.innerText = '● Sincronizado';
           
-          // Beneficio Noviembre
+          // Capital Total
+          if (data.capitalTotal !== undefined) {
+            let elCap = document.getElementById('val-total');
+            if (elCap) elCap.innerText = parseFloat(data.capitalTotal).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+          }
+
+          // Beneficio Acumulado
+          if (data.beneficioAcumulado !== undefined) {
+            let valAc = parseFloat(data.beneficioAcumulado);
+            let elBen = document.getElementById('val-beneficio');
+            if (elBen) elBen.innerText = `Beneficio acumulado: +${valAc.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })} • Inicial: 71.018,00 €`;
+          }
+
+          // Liquidez Disponible
+          if (data.liquidezDisponible !== undefined) {
+            let elLiq = document.getElementById('val-liquidez');
+            if (elLiq) elLiq.innerText = parseFloat(data.liquidezDisponible).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+          }
+
+          // Beneficio Noviembre (186,70 €)
           if (data.beneficioNoviembre !== undefined) {
-            let valNov = parseFloat(data.beneficioNoviembre) || 110.08;
+            let valNov = parseFloat(data.beneficioNoviembre);
             let elNov = document.getElementById('val-beneficio-mes');
             if (elNov) {
               elNov.innerText = (valNov >= 0 ? '+' : '') + valNov.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
@@ -412,25 +432,19 @@
             }
           }
 
-          // Aportaciones Trade Republic
-          if (data.aportacionesTR && data.aportacionesTR.length > 1) {
-            let totalAportado = 0;
-            for (let i = 1; i < data.aportacionesTR.length; i++) {
-              let val = parseFloat(data.aportacionesTR[i][2]) || 0;
-              totalAportado += val;
-            }
+          // Aportaciones Trade Republic exactas (95,00 €)
+          if (data.totalAportacionesTR !== undefined) {
             let elAport = document.getElementById('val-aportaciones-tr');
             if (elAport) {
-              elAport.innerText = totalAportado.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+              elAport.innerText = parseFloat(data.totalAportacionesTR).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
             }
           }
 
-          // Radar de Empresas V4 con Auditoría automática
+          // Radar de Empresas V4
           if (data.radar && data.radar.length > 0) {
             let tbody = document.getElementById('tabla-radar-body');
             if (tbody) {
               tbody.innerHTML = '';
-              
               data.radar.forEach(item => {
                 let ticker = item.ticker || '';
                 let empresaFase = item.empresaFase || '';
@@ -458,10 +472,6 @@
                   tbody.appendChild(tr);
                 }
               });
-              
-              if (tbody.innerHTML === '') {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No hay acciones en el radar actualmente.</td></tr>`;
-              }
             }
           }
         })
