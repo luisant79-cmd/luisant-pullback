@@ -275,220 +275,142 @@
       </table>
     </div>
 
-    <!-- Pestaña Calendario P&L (Octubre) -->
+    <!-- Pestaña Calendario P&L (Noviembre por defecto, con Octubre alternativo) -->
     <div id="tab-calendario" class="tab-section card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <div class="card-title" style="font-size:14px; color:#fff;">Octubre 2026</div>
-        <div style="font-size:12px; color:var(--text-muted);">Total: <span class="red-text">-135,59 €</span></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div class="card-title" style="font-size:14px; color:#fff;">Calendario P&L</div>
+        <div style="display:flex; gap:6px;">
+          <button onclick="cambiarMes('octubre')" id="btn-oct" class="tab-btn" style="padding:4px 10px; font-size:11px;">Octubre</button>
+          <button onclick="cambiarMes('noviembre')" id="btn-nov" class="tab-btn active" style="padding:4px 10px; font-size:11px;">Noviembre</button>
+        </div>
       </div>
-      
-      <table class="cal-table">
-        <thead>
-          <tr>
-            <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
-            <td><span class="cal-day-num">1</span></td>
-            <td><span class="cal-day-num">2</span></td>
-            <td><span class="cal-day-num">3</span></td>
-            <td><span class="cal-day-num">4</span></td>
-          </tr>
-          <tr>
-            <td><span class="cal-day-num">5</span></td>
-            <td><span class="cal-day-num">6</span></td>
-            <td><span class="cal-day-num">7</span></td>
-            <td><span class="cal-day-num">8</span><div class="cal-event cal-loss">P911<br>-429,89€</div></td>
-            <td><span class="cal-day-num">9</span></td>
-            <td><span class="cal-day-num">10</span></td>
-            <td><span class="cal-day-num">11</span></td>
-          </tr>
-          <tr>
-            <td><span class="cal-day-num">12</span></td>
-            <td><span class="cal-day-num">13</span></td>
-            <td><span class="cal-day-num">14</span></td>
-            <td><span class="cal-day-num">15</span></td>
-            <td><span class="cal-day-num">16</span><div class="cal-event cal-win">KO<br>+31,30€</div></td>
-            <td><span class="cal-day-num">17</span></td>
-            <td><span class="cal-day-num">18</span></td>
-          </tr>
-          <tr>
-            <td><span class="cal-day-num">19</span></td>
-            <td><span class="cal-day-num">20</span></td>
-            <td><span class="cal-day-num">21</span></td>
-            <td><span class="cal-day-num">22</span></td>
-            <td><span class="cal-day-num">23</span></td>
-            <td><span class="cal-day-num">24</span></td>
-            <td><span class="cal-day-num">25</span></td>
-          </tr>
-          <tr>
-            <td><span class="cal-day-num">26</span></td>
-            <td><span class="cal-day-num">27</span></td>
-            <td><span class="cal-day-num">28</span></td>
-            <td><span class="cal-day-num">29</span></td>
-            <td><span class="cal-day-num">30</span><div class="cal-event cal-loss">SMCI<br>-8,05€</div></td>
-            <td><span class="cal-day-num">31</span></td>
-            <td class="cal-empty"></td>
-          </tr>
-        </tbody>
-      </table>
+
+      <!-- Contenedor Octubre (Oculto por defecto) -->
+      <div id="cal-octubre" class="cal-mes-container" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:12px; font-weight:600; color:var(--text);">Octubre 2026</span>
+          <span style="font-size:12px; color:var(--text-muted);">Total: <span class="red-text">-135,59 €</span></span>
+        </div>
+        <table class="cal-table">
+          <thead>
+            <tr>
+              <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
+              <td><span class="cal-day-num">1</span></td>
+              <td><span class="cal-day-num">2</span></td>
+              <td><span class="cal-day-num">3</span></td>
+              <td><span class="cal-day-num">4</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">5</span></td>
+              <td><span class="cal-day-num">6</span></td>
+              <td><span class="cal-day-num">7</span></td>
+              <td><span class="cal-day-num">8</span><div class="cal-event cal-loss">P911<br>-429,89€</div></td>
+              <td><span class="cal-day-num">9</span></td>
+              <td><span class="cal-day-num">10</span></td>
+              <td><span class="cal-day-num">11</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">12</span></td>
+              <td><span class="cal-day-num">13</span></td>
+              <td><span class="cal-day-num">14</span></td>
+              <td><span class="cal-day-num">15</span></td>
+              <td><span class="cal-day-num">16</span><div class="cal-event cal-win">KO<br>+31,30€</div></td>
+              <td><span class="cal-day-num">17</span></td>
+              <td><span class="cal-day-num">18</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">19</span></td>
+              <td><span class="cal-day-num">20</span></td>
+              <td><span class="cal-day-num">21</span></td>
+              <td><span class="cal-day-num">22</span></td>
+              <td><span class="cal-day-num">23</span></td>
+              <td><span class="cal-day-num">24</span></td>
+              <td><span class="cal-day-num">25</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">26</span></td>
+              <td><span class="cal-day-num">27</span></td>
+              <td><span class="cal-day-num">28</span></td>
+              <td><span class="cal-day-num">29</span></td>
+              <td><span class="cal-day-num">30</span><div class="cal-event cal-loss">SMCI<br>-8,05€</div></td>
+              <td><span class="cal-day-num">31</span></td>
+              <td class="cal-empty"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Contenedor Noviembre (Visible por defecto) -->
+      <div id="cal-noviembre" class="cal-mes-container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:12px; font-weight:600; color:var(--text);">Noviembre 2026</span>
+          <span style="font-size:12px; color:var(--text-muted);">Total: <span id="val-cal-nov" class="green-text">+186,70 €</span></span>
+        </div>
+        <table class="cal-table">
+          <thead>
+            <tr>
+              <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
+              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
+              <td><span class="cal-day-num">1</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">2</span></td>
+              <td><span class="cal-day-num">3</span></td>
+              <td><span class="cal-day-num">4</span></td>
+              <td><span class="cal-day-num">5</span></td>
+              <td><span class="cal-day-num">6</span></td>
+              <td><span class="cal-day-num">7</span></td>
+              <td><span class="cal-day-num">8</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">9</span></td>
+              <td><span class="cal-day-num">10</span></td>
+              <td><span class="cal-day-num">11</span></td>
+              <td><span class="cal-day-num">12</span></td>
+              <td><span class="cal-day-num">13</span></td>
+              <td><span class="cal-day-num">14</span></td>
+              <td><span class="cal-day-num">15</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">16</span></td>
+              <td><span class="cal-day-num">17</span></td>
+              <td><span class="cal-day-num">18</span></td>
+              <td><span class="cal-day-num">19</span></td>
+              <td><span class="cal-day-num">20</span></td>
+              <td><span class="cal-day-num">21</span></td>
+              <td><span class="cal-day-num">22</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">23</span></td>
+              <td><span class="cal-day-num">24</span></td>
+              <td><span class="cal-day-num">25</span></td>
+              <td><span class="cal-day-num">26</span></td>
+              <td><span class="cal-day-num">27</span></td>
+              <td><span class="cal-day-num">28</span></td>
+              <td><span class="cal-day-num">29</span></td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">30</span></td>
+              <td class="cal-empty"></td><td class="cal-empty"></td>
+              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
+              <td class="cal-empty"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Pestaña Posiciones -->
     <div id="tab-posiciones" class="tab-section card">
       <div class="card-title">Posiciones & Cartera</div>
-      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Monitoreo activo de activos y distribución por cuentas.</p>
-    </div>
-
-    <!-- Pestaña Operaciones -->
-    <div id="tab-operaciones" class="tab-section card">
-      <div class="card-title">Registro de Operaciones</div>
-      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Historial operativo detallado multicuenta.</p>
-    </div>
-
-    <!-- Pestaña Rendimiento -->
-    <div id="tab-rendimiento" class="tab-section card">
-      <div class="card-title">Rendimiento P&L Anual</div>
-      <p style="color:var(--text-muted); font-size:13px; margin-top:10px;">Análisis de evolución mensual y comparativa de beneficios.</p>
-    </div>
-
-    <!-- Pestaña Dividendos -->
-    <div id="tab-dividendos" class="tab-section card">
-      <div class="card-title" style="font-size:14px; color:#fff; margin-bottom:10px;">Dividendos & Préstamos</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Concepto</th>
-            <th>Importe Real</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Total Dividendos</td>
-            <td id="val-dividendos" class="green-text" style="font-weight:bold;">399,49 €</td>
-          </tr>
-          <tr>
-            <td>Remuneración + Préstamo de Acciones</td>
-            <td class="green-text" style="font-weight:bold;">347,57 €</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-
-  <script>
-    // Función global para las pestañas
-    function openTab(evt, tabId) {
-      const sections = document.getElementsByClassName("tab-section");
-      for (let i = 0; i < sections.length; i++) {
-        sections[i].classList.remove("active-section");
-      }
-      const buttons = document.getElementsByClassName("tab-btn");
-      for (let i = 0; i < buttons.length; i++) {
-        buttons[i].classList.remove("active");
-      }
-      document.getElementById(tabId).classList.add("active-section");
-      evt.currentTarget.classList.add("active");
-    }
-
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxWWn1B2a27h-Pl3y1Pb4rbt99oVw5jJOWI2xUbFksxIAJvz87Hyoi2moAMkNhpMtdkig/exec";
-
-    function cargarDatos() {
-      fetch(GAS_URL)
-        .then(res => res.json())
-        .then(data => {
-          let syncEl = document.getElementById('sync-status');
-          if (syncEl) syncEl.innerText = '● Sincronizado';
-          
-          // Capital Total
-          if (data.capitalTotal !== undefined) {
-            let elCap = document.getElementById('val-total');
-            if (elCap) elCap.innerText = parseFloat(data.capitalTotal).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-          }
-
-          // Beneficio Acumulado
-          if (data.beneficioAcumulado !== undefined) {
-            let valAc = parseFloat(data.beneficioAcumulado);
-            let elBen = document.getElementById('val-beneficio');
-            if (elBen) elBen.innerText = `Beneficio acumulado: +${valAc.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })} • Inicial: 71.018,00 €`;
-          }
-
-          // Liquidez Disponible
-          if (data.liquidezDisponible !== undefined) {
-            let elLiq = document.getElementById('val-liquidez');
-            if (elLiq) elLiq.innerText = parseFloat(data.liquidezDisponible).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-          }
-
-          // Beneficio Noviembre
-          if (data.beneficioNoviembre !== undefined) {
-            let valNov = parseFloat(data.beneficioNoviembre);
-            let elNov = document.getElementById('val-beneficio-mes');
-            if (elNov) {
-              elNov.innerText = (valNov >= 0 ? '+' : '') + valNov.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-              elNov.className = valNov >= 0 ? 'green-text' : 'red-text';
-            }
-          }
-
-          // Aportaciones Trade Republic exactas
-          if (data.totalAportacionesTR !== undefined) {
-            let elAport = document.getElementById('val-aportaciones-tr');
-            if (elAport) {
-              elAport.innerText = parseFloat(data.totalAportacionesTR).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-            }
-          }
-
-          // Total Dividendos
-          if (data.totalDividendos !== undefined) {
-            let elDiv = document.getElementById('val-dividendos');
-            if (elDiv) {
-              elDiv.innerText = parseFloat(data.totalDividendos).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-            }
-          }
-
-          // Radar de Empresas V4
-          if (data.radar && data.radar.length > 0) {
-            let tbody = document.getElementById('tabla-radar-body');
-            if (tbody) {
-              tbody.innerHTML = '';
-              data.radar.forEach(item => {
-                let ticker = item.ticker || '';
-                let empresaFase = item.empresaFase || '';
-                let accion = item.accionOperativa || '';
-                let mediasV4 = item.mediasV4 || '';
-                let auditoriaV4 = item.auditoriaV4 || '';
-                
-                if (ticker.trim() !== '') {
-                  let badgeClass = "yellow-text";
-                  let accionUpper = accion.toUpperCase();
-                  if (accionUpper.includes("APTA") || accionUpper.includes("NIVEL 2")) {
-                    badgeClass = "green-text";
-                  } else if (accionUpper.includes("RECHAZADA")) {
-                    badgeClass = "red-text";
-                  }
-
-                  let tr = document.createElement('tr');
-                  tr.innerHTML = `
-                    <td style="font-weight:bold; color:var(--text);">${ticker}</td>
-                    <td>${empresaFase}</td>
-                    <td class="${badgeClass}" style="font-weight:bold;">${accion}</td>
-                    <td style="font-size:11px;">${mediasV4}</td>
-                    <td style="font-size:11px; color:var(--text-muted); font-family:monospace;">${auditoriaV4}</td>
-                  `;
-                  tbody.appendChild(tr);
-                }
-              });
-            }
-          }
-        })
-        .catch(err => {
-          console.log("Cargando vista local o error de red...", err);
-        });
-    }
-
-    cargarDatos();
-  </script>
-</body>
-</html>
+      <p style="color:
