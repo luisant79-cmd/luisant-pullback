@@ -113,11 +113,12 @@
     .cal-table td {
       background: #0f172a;
       border: 1px solid var(--border);
-      height: 65px;
+      height: 75px;
       vertical-align: top;
       padding: 3px;
       font-size: 10px;
       width: 14.28%;
+      overflow: hidden;
     }
     .cal-day-num {
       font-weight: bold;
@@ -127,12 +128,15 @@
     }
     .cal-empty { background: rgba(15, 23, 42, 0.4); }
     .cal-event {
-      font-size: 8px;
-      padding: 2px;
+      font-size: 7px;
+      padding: 1px 2px;
       border-radius: 3px;
       text-align: center;
       font-weight: 600;
       margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .cal-win { background: rgba(34, 197, 94, 0.2); color: var(--green); }
     .cal-loss { background: rgba(239, 68, 68, 0.2); color: var(--red); }
@@ -175,7 +179,7 @@
     <div id="tab-resumen" class="tab-section active-section card">
       <div class="card-title">Valor Total de la Cartera (Capital + Liquidez) • Base EUR (€)</div>
       <div id="val-total" style="font-size: 24px; font-weight: 700; margin: 6px 0;">-- €</div>
-      <div id="val-beneficio" style="font-size: 12px; color: var(--green); margin-bottom: 12px;">Cargando beneficio acumulado...</div>
+      <div id="val-beneficio" style="font-size: 12px; color: var(--green); margin-bottom: 12px;">Cargando beneficio...</div>
       
       <div class="grid-stats">
         <div class="stat-box">
@@ -234,7 +238,7 @@
           </thead>
           <tbody id="tabla-radar-body">
             <tr>
-              <td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando radar...</td>
+              <td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando radar completo...</td>
             </tr>
           </tbody>
         </table>
@@ -307,36 +311,18 @@
         </table>
       </div>
 
-      <!-- Contenedor Noviembre -->
+      <!-- Contenedor Noviembre (Dinámico) -->
       <div id="cal-noviembre" class="cal-mes-container">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <span style="font-size:12px; font-weight:600; color:var(--text);">Noviembre 2026</span>
           <span style="font-size:12px; color:var(--text-muted);">Total: <span id="val-cal-nov" class="green-text">+186,70 €</span></span>
         </div>
-        <table class="cal-table">
+        <table class="cal-table" id="tabla-cal-noviembre">
           <thead>
             <tr><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th></tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
-              <td><span class="cal-day-num">1</span></td>
-            </tr>
-            <tr>
-              <td><span class="cal-day-num">2</span></td><td><span class="cal-day-num">3</span></td><td><span class="cal-day-num">4</span></td><td><span class="cal-day-num">5</span></td><td><span class="cal-day-num">6</span></td><td><span class="cal-day-num">7</span></td><td><span class="cal-day-num">8</span></td>
-            </tr>
-            <tr>
-              <td><span class="cal-day-num">9</span></td><td><span class="cal-day-num">10</span></td><td><span class="cal-day-num">11</span></td><td><span class="cal-day-num">12</span></td><td><span class="cal-day-num">13</span></td><td><span class="cal-day-num">14</span></td><td><span class="cal-day-num">15</span></td>
-            </tr>
-            <tr>
-              <td><span class="cal-day-num">16</span></td><td><span class="cal-day-num">17</span></td><td><span class="cal-day-num">18</span></td><td><span class="cal-day-num">19</span></td><td><span class="cal-day-num">20</span></td><td><span class="cal-day-num">21</span></td><td><span class="cal-day-num">22</span></td>
-            </tr>
-            <tr>
-              <td><span class="cal-day-num">23</span></td><td><span class="cal-day-num">24</span></td><td><span class="cal-day-num">25</span></td><td><span class="cal-day-num">26</span></td><td><span class="cal-day-num">27</span></td><td><span class="cal-day-num">28</span></td><td><span class="cal-day-num">29</span></td>
-            </tr>
-            <tr>
-              <td><span class="cal-day-num">30</span></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td><td class="cal-empty"></td>
-            </tr>
+            <!-- Se genera dinámicamente con JS -->
           </tbody>
         </table>
       </div>
@@ -429,6 +415,76 @@
       if (btnNov) btnNov.classList.toggle('active', mes === 'noviembre');
     }
 
+    // Generar estructura de celdas para Noviembre 2026 (empieza en Domingo: 1 de nov = Dom)
+    function construirCalendarioNoviembre(operaciones) {
+      let tbody = document.querySelector('#tabla-cal-noviembre tbody');
+      if (!tbody) return;
+      
+      // Mapear operaciones por día del mes
+      let opsPorDia = {};
+      if (operaciones && Array.isArray(operaciones)) {
+        operaciones.forEach(op => {
+          // formato esperado DD/MM/YYYY o YYYY-MM-DD
+          let partes = op.fecha.includes('/') ? op.fecha.split('/') : op.fecha.split('-');
+          if (partes.length === 3) {
+            let dia, mes, anio;
+            if (partes[0].length === 4) { // YYYY-MM-DD
+              anio = partes[0]; mes = partes[1]; dia = partes[2];
+            } else { // DD/MM/YYYY
+              dia = partes[0]; mes = partes[1]; anio = partes[2];
+            }
+            if (parseInt(mes) === 11 && parseInt(anio) === 2026) {
+              let dNum = parseInt(dia);
+              if (!opsPorDia[dNum]) opsPorDia[dNum] = [];
+              opsPorDia[dNum].push(op);
+            }
+          }
+        });
+      }
+
+      // Noviembre 2026 tiene 30 días. El 1 de noviembre es Domingo (columna index 6 en formato L-D).
+      // Grid: 6 filas x 7 columnas.
+      let html = '';
+      let diaContador = 1;
+      
+      // Fila 1: El 1 cae en Domingo (L, M, M, J, V, S vacíos, D = 1)
+      html += '<tr>';
+      for (let i = 0; i < 6; i++) {
+        html += '<td class="cal-empty"></td>';
+      }
+      // Domingo 1
+      html += renderCeldaDia(1, opsPorDia[1]);
+      html += '</tr>';
+      diaContador = 2;
+
+      // Resto de filas hasta el 30
+      while (diaContador <= 30) {
+        html += '<tr>';
+        for (let col = 0; col < 7; col++) {
+          if (diaContador <= 30) {
+            html += renderCeldaDia(diaContador, opsPorDia[diaContador]);
+            diaContador++;
+          } else {
+            html += '<td class="cal-empty"></td>';
+          }
+        }
+        html += '</tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function renderCeldaDia(diaNum, listaOps) {
+      let contenido = `<span class="cal-day-num">${diaNum}</span>`;
+      if (listaOps && listaOps.length > 0) {
+        listaOps.forEach(op => {
+          let cls = op.pl >= 0 ? 'cal-win' : 'cal-loss';
+          let signo = op.pl >= 0 ? '+' : '';
+          contenido += `<div class="cal-event ${cls}">${op.activo}<br>${signo}${op.pl.toFixed(2)}€</div>`;
+        });
+      }
+      return `<td>${contenido}</td>`;
+    }
+
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxWWn1B2a27h-Pl3y1Pb4rbt99oVw5jJOWI2xUbFksxIAJvz87Hyoi2moAMkNhpMtdkig/exec";
 
     function cargarDatos() {
@@ -453,7 +509,7 @@
             if (elBen) elBen.innerText = `Beneficio acumulado: +${valAc.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })} • Inicial: 71.018,00 €`;
           }
 
-          // Liquidez Disponible
+          // Liquidez Disponible (Celda R19 General)
           if (data.liquidezDisponible !== undefined) {
             let elLiq = document.getElementById('val-liquidez');
             if (elLiq) elLiq.innerText = parseFloat(data.liquidezDisponible).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
@@ -494,15 +550,16 @@
             }
           }
 
-          // Pintar operaciones recientes y completas desde el Sheet
+          // Construir Calendario de Noviembre con operaciones reales
+          construirCalendarioNoviembre(data.operacionesRecientes);
+
+          // Pintar operaciones en tablas
           if (data.operacionesRecientes && Array.isArray(data.operacionesRecientes)) {
-            let htmlOps = '';
             let htmlOpsCompleta = '';
-            
             data.operacionesRecientes.forEach(op => {
               let colorClass = op.pl >= 0 ? 'green-text' : 'red-text';
               let signo = op.pl >= 0 ? '+' : '';
-              let rowHtml = `
+              htmlOpsCompleta += `
                 <tr>
                   <td>${op.fecha}</td>
                   <td style="font-weight:bold;">${op.activo}</td>
@@ -510,8 +567,6 @@
                   <td>${op.estado}</td>
                 </tr>
               `;
-              htmlOpsCompleta += rowHtml;
-              // Tomar las últimas 3 para el resumen
             });
 
             let tbodyOps = document.getElementById('tabla-ultimas-ops');
@@ -539,7 +594,7 @@
             }
           }
 
-          // Radar V4
+          // Radar V4 (Todas las acciones)
           if (data.radar && Array.isArray(data.radar) && data.radar.length > 0) {
             let tbody = document.getElementById('tabla-radar-body');
             if (tbody) {
@@ -568,7 +623,7 @@
         })
         .catch(err => {
           let syncEl = document.getElementById('sync-status');
-          if (syncEl) syncEl.innerText = '● Sincronización Local / Red';
+          if (syncEl) syncEl.innerText = '● Modo Local / Error Red';
           console.log("Error conectando con GAS:", err);
         });
     }
